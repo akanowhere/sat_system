@@ -1,3 +1,7 @@
+import sys
+print("sys.path:", sys.path)
+
+
 import streamlit as st
 from frontend.screens.pedidos import exibir_pedidos, adicionar_pedido
 
