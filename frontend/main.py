@@ -1,5 +1,11 @@
 import sys
+import os
+
+
+sys.path.append('/mount/src/sat_system')
+
 print("sys.path:", sys.path)
+
 
 
 import streamlit as st
