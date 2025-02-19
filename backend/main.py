@@ -1,5 +1,5 @@
 
-
+import uvicorn
 from fastapi import FastAPI
 from backend.api.sat import router as sat_router
 from backend.api.pedidos import router as pedidos_router
@@ -16,3 +16,6 @@ app.include_router(pagamentos_router, prefix="/pagamentos", tags=["pagamentos"])
 @app.get("/")
 def read_root():
     return {"message": "Bem-vindo à API do Restaurante SAT"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
