@@ -25,7 +25,10 @@
     "8501": {
       "label": "Application",
       "onAutoForward": "openPreview"
-    }
+    },
+    "8000": {
+    "label": "Backend"
+  }
   },
   "forwardPorts": [
     8501,
