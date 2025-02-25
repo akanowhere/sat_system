@@ -1,8 +1,10 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from pydantic import BaseModel, Field
 from typing import Optional
+from backend.models.cadastro import Cadastro
+
 
 from backend.db.connection import Base
 
@@ -16,7 +18,11 @@ class Pedido(Base):
     valor_total = Column(Float, nullable=False)
     data_criacao = Column(DateTime, default=datetime.utcnow)
 
-    pagamentos = relationship("Pagamento", back_populates="pedido", cascade="all, delete-orphan")
+    # Chave estrangeira
+    cadastro_id = Column(Integer, ForeignKey('cadastro.id', ondelete='CASCADE'))
+
+    #pagamentos = relationship("Pagamento", back_populates="pedido", cascade="all, delete-orphan")
+    cadastro = relationship("Cadastro", back_populates="pedidos")
 
 
 # Modelo Pydantic para resposta

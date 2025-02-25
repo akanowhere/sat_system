@@ -1,6 +1,8 @@
 import streamlit as st
 from frontend.components.auth import autenticar  # Importa a autenticação
 from frontend.screens.pedidos import exibir_pedidos, adicionar_pedido
+from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
+
 
 def main():
     name, authenticated = autenticar()  # Obtém os dados da autenticação
@@ -20,15 +22,19 @@ def main():
         elif escolha == "Pagamentos":
             st.subheader("Tela de Pagamento (em construção)")
         elif escolha == "Cadastro":
-            st.subheader("Tela de Cadastro (em construção)")
+            st.subheader("Atualizar Cadastro")
+            exibir_cadastro()
+            st.subheader("Criar Cadastro")
+            criar_cadastro()
 
         # Lógica de logout
         if st.sidebar.button("Logout"):
             del st.session_state["authenticated"]
-            del st.session_state["username"]
+            del st.session_state["cnpj"]
             st.rerun()
 
     elif authenticated:
+        st.sidebar.write(f"Bem-vindo, {name}!")
         menu = ["Home", "Pedidos", "Pagamentos"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
@@ -43,7 +49,7 @@ def main():
         
         if st.sidebar.button("Logout"):
             del st.session_state["authenticated"]
-            del st.session_state["username"]
+            del st.session_state["cnpj"]
             st.rerun()
 
 

@@ -1,26 +1,26 @@
 import streamlit as st
+import requests
 
-# Credenciais fixas para teste
-#USERNAME = "admin"
-USERNAME = "65650764000178"
-PASSWORD = "1234"
+# API de autenticação no backend
+API_URL = "http://localhost:8000/cadastros/auth"  # Certifique-se de que está correto
 
 def autenticar():
     st.title("Sistema de Pedidos SAT")
-    # Se o usuário já estiver autenticado, retorna os dados
-    if st.session_state.get("authenticated"):
-        return st.session_state["username"], True
 
-    # Exibe formulário de login
-    username = st.text_input("Usuário")
+    if st.session_state.get("authenticated"):
+        return st.session_state["cnpj"], True
+
+    cnpj = st.text_input("CNPJ")
     password = st.text_input("Senha", type="password")
 
     if st.button("Login"):
-        if username == USERNAME and password == PASSWORD:
-            st.session_state["authenticated"] = True
-            st.session_state["username"] = username
-            st.rerun()  # Recarrega a página para mostrar a tela principal
-        else:
-            st.error("Usuário ou senha incorretos")
+        response = requests.post(API_URL, json={"cnpj": cnpj, "password": password})
 
-    return None, False  # Se não autenticado, retorna falso
+        if response.status_code == 200 and response.json().get("authenticated"):
+            st.session_state["authenticated"] = True
+            st.session_state["cnpj"] = cnpj
+            st.rerun()
+        else:
+            st.error("CNPJ ou senha incorretos")
+
+    return None, False

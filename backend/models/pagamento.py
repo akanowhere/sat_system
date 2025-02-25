@@ -14,7 +14,7 @@ class Pagamento(Base):
     valor = Column(Float, nullable=False)
     data_pagamento = Column(DateTime, default=datetime.utcnow)
 
-    pedido = relationship("Pedido", back_populates="pagamentos")
+    #pedido = relationship("Pedido", back_populates="pagamentos")
 
 # Modelo Pydantic para resposta e criação
 class PagamentoBase(BaseModel):
