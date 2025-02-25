@@ -2,7 +2,8 @@ import streamlit as st
 import requests
 
 # API de autenticação no backend
-API_URL = "http://localhost:8000/cadastros/auth"  # Certifique-se de que está correto
+#API_URL = "http://localhost:8000/cadastros/auth"  # Certifique-se de que está correto
+API_URL = "https://satsystem-production.up.railway.app/cadastros/auth"
 
 def autenticar():
     st.title("Sistema de Pedidos SAT")
