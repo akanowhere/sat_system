@@ -7,11 +7,15 @@ import os
 
 #sys.path.append('/mount/src/sat_system')
 
-sys.path.append('/mount/src/sat_system/frontend')
+#sys.path.append('/mount/src/sat_system/frontend')
 
+# Adicionando o diretório raiz do projeto ao sys.path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
 
-
+# Verifique o sys.path
 print("sys.path:", sys.path)
+
+
 
 
 def main():
