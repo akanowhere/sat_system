@@ -46,7 +46,7 @@ def exibir_cadastro():
             else:
                 st.session_state["cadastro_data"] = None
                 st.warning("Nenhum cadastro encontrado para esse ID.")
-
+admin   
         except requests.exceptions.RequestException as e:
             st.error(f"Erro ao buscar cadastro: {e}")
             st.session_state["cadastro_data"] = None
