@@ -1,16 +1,20 @@
+import sys
+import os
+
+sys.path.append('/mount/src/sat_system')
+
+
 import streamlit as st
 from frontend.components.auth import autenticar  # Importa a autenticação
 from frontend.screens.pedidos import exibir_pedidos, adicionar_pedido
 from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
-import sys
-import os
 
-#sys.path.append('/mount/src/sat_system')
+
 
 #sys.path.append('/mount/src/sat_system/frontend')
 
 # Adicionando o diretório raiz do projeto ao sys.path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
+#sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
 
 # Verifique o sys.path
 print("sys.path:", sys.path)
