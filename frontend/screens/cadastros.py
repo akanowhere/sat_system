@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import time
 
-st.session_state.clear()
+#st.session_state.clear()
 
 
 #API_URL = "http://localhost:8000/cadastros/"
