@@ -7,7 +7,7 @@ import os
 
 sys.path.append('/mount/src/sat_system')
 
-print("sys.path:", sys.path)
+#print("sys.path:", sys.path)
 
 
 def main():
