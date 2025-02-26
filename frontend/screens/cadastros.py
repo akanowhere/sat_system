@@ -2,11 +2,23 @@ import streamlit as st
 import requests
 import time
 
-st.session_state.clear()
+# Garantir que as variáveis de estado sejam inicializadas
+# if "status" not in st.session_state:
+#     st.session_state["status"] = True
 
+# if "cadastro_data" not in st.session_state:
+#     st.session_state["cadastro_data"] = None  # Armazena os dados da API
 
 #API_URL = "http://localhost:8000/cadastros/"
+
+
+
+
+
+st.session_state.clear()
+
 API_URL = "https://satsystem-production.up.railway.app/cadastros/"
+
 
 
 if "status" not in st.session_state:
@@ -45,6 +57,8 @@ def exibir_cadastro():
 
 
 def criar_cadastro():
+    if "status" not in st.session_state:
+        st.session_state["status"] = True
     descricao = st.text_input("Descrição do Cadastro")
     st.session_state["status"] = st.selectbox("Status", [True, False], index=[True, False].index(st.session_state["status"]))
     nome = st.text_input("Nome Estabelecimento")

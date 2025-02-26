@@ -23,7 +23,7 @@ def main():
             st.subheader("Tela de Pagamento (em construção)")
         elif escolha == "Cadastro":
             st.subheader("Atualizar Cadastro")
-            exibir_cadastro()
+            #exibir_cadastro()
             st.subheader("Criar Cadastro")
             criar_cadastro()
 
