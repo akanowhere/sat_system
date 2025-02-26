@@ -17,7 +17,7 @@ from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
 #sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
 
 # Verifique o sys.path
-print("sys.path:", sys.path)
+#print("sys.path:", sys.path)
 
 
 
