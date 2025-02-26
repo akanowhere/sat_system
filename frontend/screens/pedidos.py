@@ -1,11 +1,14 @@
 import streamlit as st
 import requests
+import time
 
 
 #API_URL = "http://localhost:8000/pedidos/"
 #API_URL = "https://humble-yodel-57qvr7v97fvg4r-8000.app.github.dev/pedidos/"
 #API_URL = "https://satsystem.streamlit.app/pedidos/"
 API_URL = "https://satsystem-production.up.railway.app/pedidos/"
+
+
 
 def exibir_pedidos():
     try:
@@ -25,21 +28,27 @@ def exibir_pedidos():
         
 
 def adicionar_pedido():
-    descricao = st.text_input("Descrição do Pedido")
-    status = st.selectbox("Status", ["pendente", "concluído", "cancelado"])
-    valor_total = st.number_input("Valor Total", min_value=0.0, format="%.2f")
+    key_descricao = "descricao_" + str(time.time())
+    #descricao = st.text_input("Descrição do Pedido")
+    with st.form(key="pedido_form"):
+        descricao = st.text_input("Descrição do Pedido")
+        status = st.selectbox("Status", ["pendente", "concluído", "cancelado"])
+        valor_total = st.number_input("Valor Total", min_value=0.0, format="%.2f")
 
-    if st.button("Adicionar_Pedido"):
-        if not descricao or valor_total <= 0:
-            st.warning("Descrição e valor total são obrigatórios!")
-            return
-        
-        data = {"descricao": descricao, "status": status, "valor_total": valor_total}
+        if st.form_submit_button("Adicionar_Pedido"):
+            if not descricao or valor_total <= 0:
+                st.warning("Descrição e valor total são obrigatórios!")
+                return
+            
+            data = {"descricao": descricao, "status": status, "valor_total": valor_total}
 
-        try:
-            response = requests.post(API_URL, json=data)
-            response.raise_for_status()
-            st.success("Pedido Adicionado!")
-            st.rerun()  # Atualiza a página automaticamente
-        except requests.exceptions.RequestException as e:
-            st.error(f"Erro ao adicionar pedido: {e}")
+            try:
+                response = requests.post(API_URL, json=data)
+                response.raise_for_status()
+                
+                st.success("Pedido Adicionado!")
+                
+                time.sleep(2)
+                st.rerun()  # Atualiza a página automaticamente
+            except requests.exceptions.RequestException as e:
+                st.error(f"Erro ao adicionar pedido: {e}")
