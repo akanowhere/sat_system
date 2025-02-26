@@ -5,7 +5,11 @@ from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
 import sys
 import os
 
-sys.path.append('/mount/src/sat_system')
+#sys.path.append('/mount/src/sat_system')
+
+sys.path.append('/mount/src/sat_system/frontend')
+
+
 
 print("sys.path:", sys.path)
 
