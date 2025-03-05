@@ -50,4 +50,4 @@ def autenticar(login_data: LoginRequest, db: Session = Depends(get_db)):
     if not cadastro or cadastro.password != login_data.password:
         raise HTTPException(status_code=401, detail="CNPJ ou senha incorretos")
     
-    return {"authenticated": True}
+    return {"authenticated": True, "id": cadastro.id}
