@@ -33,7 +33,7 @@ class PedidoBase(BaseModel):
     status: str = "pendente"
     valor_total: float
     data_criacao: Optional[datetime] = None  # Opcional, será automaticamente atribuído ao criar
-    #data_criacao: datetime
+    cadastro_id: Optional[int] = None
 
     class Config:
         from_attributes = True
