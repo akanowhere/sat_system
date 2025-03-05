@@ -24,10 +24,10 @@ from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
 
 
 def main():
-    name, authenticated = autenticar()  # Obtém os dados da autenticação
+    cnpj, authenticated, cadastro_id  = autenticar()  # Obtém os dados da autenticação
 
-    if authenticated and name == "admin":
-        st.sidebar.write(f"Bem-vindo, {name}!")
+    if authenticated and cnpj == "admin":
+        st.sidebar.write(f"Bem-vindo, {cnpj}!")
 
         menu = ["Home", "Pedidos", "Pagamentos", "Cadastro"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
@@ -37,7 +37,7 @@ def main():
         elif escolha == "Pedidos":
             st.subheader("Tela de Pedidos")
             exibir_pedidos()
-            adicionar_pedido()
+            adicionar_pedido(cadastro_id)
         elif escolha == "Pagamentos":
             st.subheader("Tela de Pagamento (em construção)")
         elif escolha == "Cadastro":
@@ -53,7 +53,7 @@ def main():
             st.rerun()
 
     elif authenticated:
-        st.sidebar.write(f"Bem-vindo, {name}!")
+        st.sidebar.write(f"Bem-vindo, {cnpj}!")
         menu = ["Home", "Pedidos", "Pagamentos"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
@@ -62,7 +62,7 @@ def main():
         elif escolha == "Pedidos":
             st.subheader("Tela de Pedidos")
             exibir_pedidos()
-            adicionar_pedido()
+            adicionar_pedido(cadastro_id)
         elif escolha == "Pagamentos":
             st.subheader("Tela de Pagamento (em construção)")
         

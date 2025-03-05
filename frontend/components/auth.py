@@ -9,7 +9,7 @@ def autenticar():
     st.title("Sistema de Pedidos SAT")
 
     if st.session_state.get("authenticated"):
-        return st.session_state["cnpj"], True
+        return st.session_state["cnpj"], True, st.session_state.get("cadastro_id")
 
     cnpj = st.text_input("CNPJ")
     password = st.text_input("Senha", type="password")
@@ -20,8 +20,9 @@ def autenticar():
         if response.status_code == 200 and response.json().get("authenticated"):
             st.session_state["authenticated"] = True
             st.session_state["cnpj"] = cnpj
+            st.session_state["cadastro_id"] = response.json().get("id")
             st.rerun()
         else:
             st.error("CNPJ ou senha incorretos")
 
-    return None, False
+    return None, None, False

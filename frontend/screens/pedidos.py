@@ -25,20 +25,22 @@ def exibir_pedidos():
     except requests.exceptions.RequestException as e:
         st.error(f"Erro ao carregar pedidos: {e}")
 
-def adicionar_pedido():
+def adicionar_pedido(cadastro_id):
     key_descricao = "descricao_" + str(time.time())
     
     with st.form(key="pedido_form"):
         descricao = st.text_input("Descrição do Pedido")
         status = st.selectbox("Status", ["pendente", "concluído", "cancelado"])
         valor_total = st.number_input("Valor Total", min_value=0.0, format="%.2f")
+        cadastro_id = cadastro_id
+        
 
         if st.form_submit_button("Adicionar Pedido"):
             if not descricao or valor_total <= 0:
                 st.warning("Descrição e valor total são obrigatórios!")
                 return
             
-            data = {"descricao": descricao, "status": status, "valor_total": valor_total}
+            data = {"descricao": descricao, "status": status, "valor_total": valor_total, "cadastro_id": cadastro_id}
 
             try:
                 response = requests.post(API_URL, json=data)
