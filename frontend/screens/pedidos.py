@@ -19,7 +19,7 @@ def exibir_pedidos():
         # st.write("Dados recebidos:", pedidos)
         
         if isinstance(pedidos, list) and len(pedidos) > 0 and isinstance(pedidos[0], dict):
-            st.table(pedidos)
+            st.table(pedidos[-10:])
         else:
             st.error("Formato inesperado de resposta da API!")
     except requests.exceptions.RequestException as e:
@@ -28,7 +28,7 @@ def exibir_pedidos():
 def adicionar_pedido(cadastro_id):
     key_descricao = "descricao_" + str(time.time())
     
-    with st.form(key="pedido_form"):
+    with st.form(key="pedido_form", clear_on_submit=True):
         descricao = st.text_input("Descrição do Pedido")
         status = st.selectbox("Status", ["pendente", "concluído", "cancelado"])
         valor_total = st.number_input("Valor Total", min_value=0.0, format="%.2f")

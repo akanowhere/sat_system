@@ -29,7 +29,7 @@ if "cadastro_data" not in st.session_state:
 
 
 def exibir_cadastro():
-    with st.form(key="cadastro_view_form"):
+    with st.form(key="cadastro_view_form", clear_on_submit=True):
         if "cadastro_data" not in st.session_state:
             st.session_state["cadastro_data"] = None  # Armazena os dados da API
         id_cadastro = st.text_input("Número do Cadastro", "")
@@ -63,7 +63,7 @@ def exibir_cadastro():
 
 
 def criar_cadastro():
-    with st.form(key="cadastro_form"):
+    with st.form(key="cadastro_form", clear_on_submit=True):
         if "status" not in st.session_state:
             st.session_state["status"] = True
         descricao = st.text_input("Descrição do Cadastro")
