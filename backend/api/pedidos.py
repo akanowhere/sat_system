@@ -1,13 +1,15 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from backend.db.connection import get_db
+from fastapi import Query
 from backend.models.pedido import PedidoBase
 from backend.services.pedido_service import (
     get_pedidos as get_pedidos_service,
     get_pedido as get_pedido_service,
     criar_pedido as criar_pedido_service,
     atualizar_pedido as atualizar_pedido_service,
-    deletar_pedido as deletar_pedido_service
+    deletar_pedido as deletar_pedido_service,
+    get_pedidos_id as get_pedidos_por_cadastro
 )
 
 router = APIRouter()
@@ -40,3 +42,8 @@ def deletar_pedido(pedido_id: int, db: Session = Depends(get_db)):
     if not sucesso:
         return {"message": "Pedido não encontrado"}
     return {"message": "Pedido deletado com sucesso"}
+
+@router.get("/cadastro/{cadastro_id}", response_model=list[PedidoBase])
+def get_pedidos_id(cadastro_id: int, db: Session = Depends(get_db)):
+    """ Retorna os pedidos filtrados pelo cadastro_id. """
+    return get_pedidos_por_cadastro(db, cadastro_id)

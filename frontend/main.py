@@ -36,7 +36,7 @@ def main():
             st.subheader("Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos")
         elif escolha == "Pedidos":
             st.subheader("Tela de Pedidos")
-            exibir_pedidos()
+            exibir_pedidos(cadastro_id)
             adicionar_pedido(cadastro_id)
         elif escolha == "Pagamentos":
             st.subheader("Tela de Pagamento (em construção)")
@@ -61,7 +61,7 @@ def main():
             st.subheader("Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos")
         elif escolha == "Pedidos":
             st.subheader("Tela de Pedidos")
-            exibir_pedidos()
+            exibir_pedidos(cadastro_id)
             adicionar_pedido(cadastro_id)
         elif escolha == "Pagamentos":
             st.subheader("Tela de Pagamento (em construção)")
