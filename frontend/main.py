@@ -35,10 +35,21 @@ hide_github_icon = """
     display: none; 
 }
 
+/* Esconder menu principal, rodapé e cabeçalho */
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+header { visibility: hidden; }
+
 /* Esconder o avatar do criador do app */
 img[data-testid="appCreatorAvatar"] {
     display: none !important;
 }
+
+/* Esconder o link do perfil */
+a[href^="https://share.streamlit.io/user/"] {
+    display: none !important;
+}
+
 
 </style>
 """
