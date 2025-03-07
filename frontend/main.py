@@ -6,7 +6,7 @@ import os
 sys.path.append('/mount/src/sat_system')
 
 
-import streamlit as st
+
 from frontend.components.auth import autenticar  # Importa a autenticação
 from frontend.screens.pedidos import exibir_pedidos, adicionar_pedido
 from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
@@ -54,6 +54,7 @@ a[href^="https://share.streamlit.io/user/"] {
 </style>
 """
 
+import streamlit as st
 
 # Aplicar o CSS no Streamlit
 st.markdown(hide_github_icon, unsafe_allow_html=True)
