@@ -23,8 +23,7 @@ from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
 
 # Código CSS para esconder o ícone do GitHub
 
-# Código CSS para esconder o ícone do GitHub, menu, rodapé e cabeçalho
-hide_elements_css = """
+hide_github_icon = """
 <style>
 /* Esconder o link do GitHub */
 .css-1jc7ptx, 
@@ -33,18 +32,18 @@ hide_elements_css = """
 .styles_viewerBadge__1yB5_, 
 .viewerBadge_link__1S137, 
 .viewerBadge_text__1JaDK { 
-    display: none !important; 
+    display: none; 
 }
 
 /* Esconder menu principal, rodapé e cabeçalho */
-.st-emotion-cache-0 { visibility: hidden !important; } /* Menu */
-.st-emotion-cache-1 { visibility: hidden !important; } /* Rodapé */
-header { visibility: hidden !important; }
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+header { visibility: hidden; }
 </style>
 """
 
 # Aplicar o CSS no Streamlit
-st.markdown(hide_elements_css, unsafe_allow_html=True)
+st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 
 
