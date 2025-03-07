@@ -41,13 +41,10 @@ footer { visibility: hidden; }
 header { visibility: hidden; }
 
 /* Esconder o contêiner do perfil */
-div[class*="_profileContainer"] {
-    display: none !important;
-}
-
-/* Esconder a pré-visualização do perfil */
-div[class*="_profilePreview"] {
-    display: none !important;
+._profileContainer_gzau3_53, 
+._profilePreview_gzau3_63, 
+._profileImage_gzau3_78 {
+    display: none;
 }
 
 
