@@ -39,8 +39,16 @@ hide_github_icon = """
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
 header { visibility: hidden; }
+
+/* Esconder o perfil do usuário (avatar e link) */
+._profileContainer_gzau3_53 {
+    display: none;
+}
+
+
 </style>
 """
+
 
 # Aplicar o CSS no Streamlit
 st.markdown(hide_github_icon, unsafe_allow_html=True)
