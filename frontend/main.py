@@ -35,18 +35,10 @@ hide_github_icon = """
     display: none; 
 }
 
-/* Esconder menu principal, rodapé e cabeçalho */
-#MainMenu { visibility: hidden; }
-footer { visibility: hidden; }
-header { visibility: hidden; }
-
-/* Esconder o contêiner do perfil */
-._profileContainer_gzau3_53, 
-._profilePreview_gzau3_63, 
-._profileImage_gzau3_78 {
-    display: none;
+/* Esconder o avatar do criador do app */
+img[data-testid="appCreatorAvatar"] {
+    display: none !important;
 }
-
 
 </style>
 """
