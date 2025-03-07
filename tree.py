@@ -1,14 +1,14 @@
 import os
 
 def listar_estrutura(diretorio, nivel=0):
-    """Lista todos os arquivos e diretórios do projeto."""
+    """Lista todos os arquivos e diretórios do projeto, filtrando apenas arquivos .py."""
     try:
         for item in os.listdir(diretorio):
             caminho_completo = os.path.join(diretorio, item)
             if os.path.isdir(caminho_completo):
                 print("  " * nivel + f"📂 {item}/")
                 listar_estrutura(caminho_completo, nivel + 1)
-            else:
+            elif item.endswith('.py'):  # Filtra apenas arquivos .py
                 print("  " * nivel + f"📄 {item}")
     except PermissionError:
         print("  " * nivel + "🚫 [Sem Permissão]")

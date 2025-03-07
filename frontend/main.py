@@ -21,6 +21,20 @@ from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
 # Verifique o sys.path
 #print("sys.path:", sys.path)
 
+# Código CSS para esconder o ícone do GitHub
+
+hide_github_icon = """
+<style>
+#GithubIcon {
+  visibility: hidden;
+}
+</style>
+"""
+
+# Aplicar o CSS no Streamlit
+st.markdown(hide_github_icon, unsafe_allow_html=True)
+
+
 
 
 def main():
