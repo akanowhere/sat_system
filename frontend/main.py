@@ -41,17 +41,25 @@ footer { visibility: hidden; }
 header { visibility: hidden; }
 
 /* Esconder o avatar do criador do app */
-img[data-testid="appCreatorAvatar"] {
+img[src*="avatars.githubusercontent.com"] {
     display: none !important;
 }
 
 /* Esconder o link do perfil */
-a[href^="https://share.streamlit.io/user/"] {
+a[href*="share.streamlit.io/user/"] {
     display: none !important;
 }
-
-
 </style>
+
+<script>
+setTimeout(function() {
+    let avatar = document.querySelector('img[data-testid="appCreatorAvatar"]');
+    if (avatar) avatar.style.display = 'none';
+
+    let profileLink = document.querySelector('a[href*="share.streamlit.io/user/"]');
+    if (profileLink) profileLink.style.display = 'none';
+}, 3000); // Aguarda 3 segundos
+</script>
 """
 
 import streamlit as st
