@@ -21,6 +21,19 @@ from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
 # Verifique o sys.path
 #print("sys.path:", sys.path)
 
+hide_profile_css = """
+<style>
+/* Esconder o perfil do usuário (avatar e link) */
+div[class^="_profileContainer"] {
+    display: none !important;
+}
+</style>
+"""
+
+# Aplicar o CSS no Streamlit
+st.markdown(hide_profile_css, unsafe_allow_html=True)
+
+
 
 def main():
     cnpj, authenticated, cadastro_id  = autenticar()  # Obtém os dados da autenticação
