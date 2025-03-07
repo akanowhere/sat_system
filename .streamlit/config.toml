@@ -1,7 +1,10 @@
-[server]
-showGitHubIcon = false
-showSourceCode = false
-enableCORS = false  # Impede recursos cruzados, o que pode ajudar a personalizar o frontend
+[global]
+disableWidgetStateDuplicationWarning = true  # Evita alertas desnecessários
 
-[ui]
-showGitHubBadge = false  # Remove o ícone do GitHub
+[server]
+enableCORS = false
+enableXsrfProtection = false
+runOnSave = true  # Reinicia automaticamente ao salvar mudanças
+
+[browser]
+gatherUsageStats = false  # Impede o envio de dados para o Streamlit
