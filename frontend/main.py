@@ -3,7 +3,11 @@ import os
 
 
 # não apagar o cabeçalho em prod pois aqui inicializa o dir em prod
-sys.path.append('/mount/src/sat_system')
+#sys.path.append('/mount/src/sat_system')
+
+#sys.path.append(os.path.join(os.path.dirname(__file__), 'frontend'))
+
+sys.path.append('/app')
 
 
 
