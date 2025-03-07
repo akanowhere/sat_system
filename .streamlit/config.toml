@@ -1,0 +1,7 @@
+[server]
+showGitHubIcon = false
+showSourceCode = false
+enableCORS = false  # Impede recursos cruzados, o que pode ajudar a personalizar o frontend
+
+[ui]
+showGitHubBadge = false  # Remove o ícone do GitHub
