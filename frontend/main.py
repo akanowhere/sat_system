@@ -21,39 +21,6 @@ from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
 # Verifique o sys.path
 #print("sys.path:", sys.path)
 
-# Código CSS para esconder o ícone do GitHub
-
-hide_github_icon = """
-<style>
-/* Esconder o link do GitHub */
-.css-1jc7ptx, 
-.e1ewe7hr3, 
-.viewerBadge_container__1QSob, 
-.styles_viewerBadge__1yB5_, 
-.viewerBadge_link__1S137, 
-.viewerBadge_text__1JaDK { 
-    display: none; 
-}
-
-/* Esconder menu principal, rodapé e cabeçalho */
-#MainMenu { visibility: hidden; }
-footer { visibility: hidden; }
-header { visibility: hidden; }
-
-/* Esconder o perfil do usuário (avatar e link) */
-._profileContainer_gzau3_53 {
-    display: none;
-}
-
-
-</style>
-"""
-
-
-# Aplicar o CSS no Streamlit
-st.markdown(hide_github_icon, unsafe_allow_html=True)
-
-
 
 def main():
     cnpj, authenticated, cadastro_id  = autenticar()  # Obtém os dados da autenticação
