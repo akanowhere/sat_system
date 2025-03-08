@@ -17,8 +17,8 @@ import time
 
 st.session_state.clear()
 
-API_URL = "https://satsystem-production.up.railway.app/cadastros/"
-
+#API_URL = "https://satsystem-production.up.railway.app/cadastros/"
+API_URL = "https://satsystem-production-2931.up.railway.app/cadastros/"
 
 
 if "status" not in st.session_state:
