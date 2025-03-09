@@ -7,7 +7,11 @@ import requests
 API_URL = "https://satsystem-production-2931.up.railway.app/cadastros/auth"
 
 def autenticar():
-    st.title("Sistema de Pedidos SAT")
+    st.markdown(
+    "<h1 style='text-align: center; font-size: 50px; color: black'>Sistema de Pedidos SAT</h1>",
+    unsafe_allow_html=True
+)
+    #st.title("Sistema de Pedidos SAT")
 
     if st.session_state.get("authenticated"):
         return st.session_state["cnpj"], True, st.session_state.get("cadastro_id")
@@ -18,11 +22,16 @@ def autenticar():
     if st.button("Login"):
         response = requests.post(API_URL, json={"cnpj": cnpj, "password": password})
 
+        #st.write("Response JSON:", response.json())
+        #print("Response JSON:", response.json())
+
         if response.status_code == 200 and response.json().get("authenticated"):
             st.session_state["authenticated"] = True
             st.session_state["cnpj"] = cnpj
-            st.session_state["cadastro_id"] = response.json().get("id")
+            st.session_state["cadastro_id"] = response.json().get("id")  # Busca o ID do cadastro
+            #st.write(st.session_state)  # Debug
             st.rerun()
+
         else:
             st.error("CNPJ ou senha incorretos")
 

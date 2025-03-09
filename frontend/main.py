@@ -82,25 +82,62 @@ def main():
 
     if authenticated and cnpj == "admin":
         #st.sidebar.write("Debug Session State:", st.session_state)
-        st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
+        #st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
+        st.sidebar.markdown(f"Bem-vindo, **{cnpj}**!")
 
         menu = ["Home", "Pedidos", "Pagamentos", "Cadastro"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
         if escolha == "Home":
-            st.subheader("Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos")
+            st.markdown(
+                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos"
+                "</h2>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos")
         elif escolha == "Pedidos":
-            st.subheader("Tela de Pedidos")
+            st.markdown(
+                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "Pedidos"
+                "</h2>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Tela de Pedidos")
             exibir_pedidos(cadastro_id)
             adicionar_pedido(cadastro_id)
         elif escolha == "Pagamentos":
-            st.subheader("Tela de Pagamento (em construção)")
+            st.markdown(
+                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "Tela de Pagamento (em construção)"
+                "</h2>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Tela de Pagamento (em construção)")
         elif escolha == "Cadastro":
-            st.subheader("Visualizar Cadastro")
+            #st.subheader("Visualizar Cadastro")
+            st.markdown(
+                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "Visualizar Cadastro"
+                "</h2>",
+                unsafe_allow_html=True
+            )
             exibir_cadastro()
-            st.subheader("Atualizar Cadastro")
+            st.markdown(
+                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "Atualizar Cadastro"
+                "</h2>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Atualizar Cadastro")
             atualizar_cadastro()
-            st.subheader("Criar Cadastro")
+            #st.subheader("Criar Cadastro")
+            st.markdown(
+                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "Criar Cadastro"
+                "</h2>",
+                unsafe_allow_html=True
+            )
             criar_cadastro()
             
 
@@ -111,18 +148,37 @@ def main():
             st.rerun()
 
     elif authenticated:
-        st.sidebar.write(f"Bem-vindo, {cnpj}!")
+        #st.sidebar.write(f"Bem-vindo, {cnpj}!")
+        st.sidebar.markdown(f"Bem-vindo, **{cnpj}**!")
         menu = ["Home", "Pedidos", "Pagamentos"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
         if escolha == "Home":
-            st.subheader("Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos")
+            st.markdown(
+                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos"
+                "</h2>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos")
         elif escolha == "Pedidos":
-            st.subheader("Tela de Pedidos")
+            st.markdown(
+                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "Pedidos"
+                "</h2>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Tela de Pedidos")
             exibir_pedidos(cadastro_id)
             adicionar_pedido(cadastro_id)
         elif escolha == "Pagamentos":
-            st.subheader("Tela de Pagamento (em construção)")
+            st.markdown(
+                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "Tela de Pagamento (em construção)"
+                "</h2>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Tela de Pagamento (em construção)")
         
         if st.sidebar.button("Logout"):
             del st.session_state["authenticated"]
