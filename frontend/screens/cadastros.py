@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+import pandas as pd
 
 # Garantir que as variáveis de estado sejam inicializadas
 # if "status" not in st.session_state:
@@ -57,9 +58,82 @@ def exibir_cadastro():
                 st.rerun()  # Atualiza a página automaticamente
                 st.session_state["cadastro_data"] = None
 
-        # Exibir a tabela se houver dados salvos
+        # Exibir a tabela se houver dados salvos e retirar opções suspensas df
         if st.session_state["cadastro_data"]:
-            st.table(st.session_state["cadastro_data"])
+            st.markdown(
+                            """
+                            <style>
+                            [data-testid="stElementToolbar"] {
+                                display: none;
+                            }
+                            </style>
+                            """,
+                            unsafe_allow_html=True
+                        )
+                
+            #st.table(st.session_state["cadastro_data"])
+            df = pd.DataFrame(st.session_state["cadastro_data"])
+
+              # 🔹 **Selecionar colunas específicas**
+            colunas_desejadas = ["id", "nome", "email", "data_cadastro"]  # Altere conforme necessário
+            df = df[colunas_desejadas] if all(col in df.columns for col in colunas_desejadas) else df
+
+            # 🔹 **Melhor opção para exibição**
+            st.dataframe(df, use_container_width=True, hide_index=True)
+
+            # 🔹 **Opção alternativa: Tabela Estática**
+            # st.table(df)
+
+
+def atualizar_cadastro():
+    """Formulário para atualizar um campo do cadastro (semelhante ao Swagger)."""
+    with st.form(key="update_form", clear_on_submit=True):
+        # 🔹 Entrada do ID do cadastro
+        cadastro_id = st.text_input("ID do Cadastro a ser atualizado:", "")
+
+        # 🔹 Seleção do campo a ser atualizado
+        opcao = st.selectbox(
+            "Escolha o campo para atualização:",
+            ["descricao", "status", "nome", "cnpj", "ie", "licenca", "endereco", "mail", "telefone", "password"]
+        )
+
+        # 🔹 Novo valor para o campo escolhido
+        novo_valor = st.text_input(f"Novo valor para {opcao}:", "")
+
+        # 🔹 Botão para atualizar o cadastro
+        if st.form_submit_button("Atualizar Cadastro"):
+            if not cadastro_id.strip():
+                st.warning("Por favor, insira um ID válido para atualização.")
+                return
+            if not novo_valor.strip():
+                st.warning("Por favor, insira um valor para atualização.")
+                return
+
+            try:
+                # 🔹 Converte os tipos de dados corretamente
+                if opcao == "status":
+                    novo_valor = novo_valor.lower() in ["true", "1", "yes", "sim"]
+                elif opcao == "licenca":
+                    try:
+                        novo_valor = int(novo_valor)
+                    except ValueError:
+                        st.error("O campo 'licenca' deve ser um número inteiro.")
+                        return
+
+                # 🔹 Monta o JSON para enviar na requisição
+                update_data = {opcao: novo_valor}
+
+                # 🔹 Envia a requisição PATCH para atualizar o cadastro
+                response = requests.patch(f"{API_URL}{cadastro_id}", json=update_data)
+                response.raise_for_status()
+
+                st.success("Cadastro atualizado com sucesso!")
+                time.sleep(2)
+                st.rerun()
+            except requests.exceptions.RequestException as e:
+                st.error(f"Erro ao atualizar cadastro: {e}")
+                time.sleep(2)
+                st.rerun()
 
 
 def criar_cadastro():

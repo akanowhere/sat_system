@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.db.connection import get_db
-from backend.models.cadastro import CadastroBase, Cadastro
+from backend.models.cadastro import CadastroBase, Cadastro, CadastroUpdate
 from backend.models.auth import LoginRequest  # Certifique-se de que o caminho está correto
 from backend.services.cadastro_service import (
     get_cadastros as get_cadastros_service,
     get_cadastro as get_cadastro_service,
     criar_cadastro as criar_cadastro_service,
     atualizar_cadastro as atualizar_cadastro_service,
-    deletar_cadastro as deletar_cadastro_service
+    deletar_cadastro as deletar_cadastro_service,
+    atualizar_cadastro_parcial as atualizar_cadastro_parcial_service
 )
 
 router = APIRouter()
@@ -51,3 +52,13 @@ def autenticar(login_data: LoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="CNPJ ou senha incorretos")
     
     return {"authenticated": True, "id": cadastro.id}
+
+
+@router.patch("/{cadastro_id}", response_model=CadastroBase)
+def atualizar_cadastro_parcial(cadastro_id: int, cadastro: CadastroUpdate, db: Session = Depends(get_db)):
+    cadastro_atualizado = atualizar_cadastro_parcial_service(db, cadastro_id, cadastro)
+    
+    if not cadastro_atualizado:
+        raise HTTPException(status_code=404, detail="Cadastro não encontrado")
+
+    return cadastro_atualizado

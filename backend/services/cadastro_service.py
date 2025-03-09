@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from backend.models.cadastro import Cadastro, CadastroBase
+from backend.models.cadastro import Cadastro, CadastroBase, CadastroUpdate
 
 def get_cadastros(db: Session):
     """ Retorna todos os cadastros do banco de dados. """
@@ -48,3 +48,19 @@ def deletar_cadastro(db: Session, cadastro_id: int):
     db.delete(cadastro)
     db.commit()
     return True
+
+def atualizar_cadastro_parcial(db: Session, cadastro_id: int, cadastro_data: CadastroUpdate):
+    """ Atualiza um cadastro parcialmente. """
+    cadastro = db.query(Cadastro).filter(Cadastro.id == cadastro_id).first()
+    
+    if not cadastro:
+        return None
+    
+    # Atualiza apenas os campos fornecidos pelo usuário
+    for key, value in cadastro_data.dict(exclude_unset=True).items():
+        setattr(cadastro, key, value)
+
+    db.commit()
+    db.refresh(cadastro)
+    return cadastro
+

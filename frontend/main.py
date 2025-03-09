@@ -13,7 +13,7 @@ sys.path.append('/app')
 
 from frontend.components.auth import autenticar  # Importa a autenticação
 from frontend.screens.pedidos import exibir_pedidos, adicionar_pedido
-from frontend.screens.cadastros import exibir_cadastro, criar_cadastro
+from frontend.screens.cadastros import exibir_cadastro, criar_cadastro, atualizar_cadastro
 
 
 
@@ -74,10 +74,15 @@ st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 
 def main():
-    cnpj, authenticated, cadastro_id  = autenticar()  # Obtém os dados da autenticação
+    #name, authenticated = autenticar()  # Obtém os dados da autenticação
+    cnpj, authenticated, cadastro_id = autenticar()  # Obtém os dados da autenticação
+
+
+    #st.write(f"Authenticated: {authenticated}, CNPJ: {cnpj}, Cadastro ID: {cadastro_id}")
 
     if authenticated and cnpj == "admin":
-        st.sidebar.write(f"Bem-vindo, {cnpj}!")
+        #st.sidebar.write("Debug Session State:", st.session_state)
+        st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
 
         menu = ["Home", "Pedidos", "Pagamentos", "Cadastro"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
@@ -91,10 +96,13 @@ def main():
         elif escolha == "Pagamentos":
             st.subheader("Tela de Pagamento (em construção)")
         elif escolha == "Cadastro":
-            st.subheader("Atualizar Cadastro")
+            st.subheader("Visualizar Cadastro")
             exibir_cadastro()
+            st.subheader("Atualizar Cadastro")
+            atualizar_cadastro()
             st.subheader("Criar Cadastro")
             criar_cadastro()
+            
 
         # Lógica de logout
         if st.sidebar.button("Logout"):

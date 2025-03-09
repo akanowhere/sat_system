@@ -43,3 +43,19 @@ class CadastroBase(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class CadastroUpdate(BaseModel):
+    descricao: Optional[str] = None
+    status: Optional[bool] = None
+    nome: Optional[str] = None
+    cnpj: Optional[str] = None
+    ie: Optional[str] = None
+    licenca: Optional[int] = None
+    endereco: Optional[str] = None
+    mail: Optional[str] = None
+    telefone: Optional[str] = None
+    password: Optional[str] = None
+
+    class Config:
+        from_attributes = True
