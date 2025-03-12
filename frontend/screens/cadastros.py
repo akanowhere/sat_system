@@ -22,6 +22,7 @@ st.session_state.clear()
 API_URL = "https://satsystem-production-2931.up.railway.app/cadastros/"
 
 
+
 if "status" not in st.session_state:
     st.session_state["status"] = True
 
@@ -98,7 +99,7 @@ def atualizar_cadastro():
         )
 
         # 🔹 Novo valor para o campo escolhido
-        novo_valor = st.text_input(f"Novo valor para {opcao}:", "")
+        novo_valor = st.text_input(f"Novo valor:")
 
         # 🔹 Botão para atualizar o cadastro
         if st.form_submit_button("Atualizar Cadastro"):
@@ -136,12 +137,15 @@ def atualizar_cadastro():
                 st.rerun()
 
 
+
 def criar_cadastro():
     with st.form(key="cadastro_form", clear_on_submit=True):
         if "status" not in st.session_state:
             st.session_state["status"] = True
         descricao = st.text_input("Descrição do Cadastro")
-        st.session_state["status"] = st.selectbox("Status", [True, False], index=[True, False].index(st.session_state["status"]))
+        #st.session_state["status"] = st.selectbox("Status", [True, False], index=[True, False].index(st.session_state["status"]))
+        default_status = st.session_state.get("status", False)  # Se None, assume False
+        st.session_state["status"] = st.selectbox("Status", [True, False], index=[True, False].index(default_status))
         nome = st.text_input("Nome Estabelecimento")
         cnpj = st.text_input("CNPJ Estabelecimento")
         ie = st.text_input("IE Estabelecimento")

@@ -17,6 +17,7 @@ class Pedido(Base):
     status = Column(String, default="pendente")
     valor_total = Column(Float, nullable=False)
     data_criacao = Column(DateTime, default=datetime.utcnow)
+    quantidade = Column(Float, nullable=False)
 
     # Chave estrangeira
     cadastro_id = Column(Integer, ForeignKey('cadastro.id', ondelete='CASCADE'))
@@ -34,6 +35,7 @@ class PedidoBase(BaseModel):
     valor_total: float
     data_criacao: Optional[datetime] = None  # Opcional, será automaticamente atribuído ao criar
     cadastro_id: Optional[int] = None
+    quantidade: Optional[float] = None
 
     class Config:
         from_attributes = True

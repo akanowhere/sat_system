@@ -11,12 +11,14 @@ API_URL = "https://satsystem-production-2931.up.railway.app/pedidos/"
 # Adicionar CSS para reduzir o tamanho da fonte da tabela
 
 def exibir_pedidos(cadastro_id):
+    #print(cadastro_id)
     try:
         # Passar o cadastro_id como parâmetro na URL
         #response = requests.get(f"{API_URL}?/cadastro_id={cadastro_id}")
         response = requests.get(f"{API_URL}cadastro/{cadastro_id}")
         response.raise_for_status()
         pedidos = response.json()
+        #print(pedidos)
 
         # Debug: Verificar estrutura dos pedidos
         # st.write("Dados recebidos:", pedidos)
@@ -25,26 +27,37 @@ def exibir_pedidos(cadastro_id):
             # Exibe os últimos 10 pedidos
             st.table(pedidos[-10:])
         else:
-            st.error("Formato inesperado de resposta da API!")
+            st.error("Sem pedidos gerados no Sitema.")
     except requests.exceptions.RequestException as e:
         st.error(f"Erro ao carregar pedidos: {e}")
+
+
+# Verifica se a tela deve ficar bloqueada
 
 def adicionar_pedido(cadastro_id):
     key_descricao = "descricao_" + str(time.time())
     
     with st.form(key="pedido_form", clear_on_submit=True):
         descricao = st.text_input("Descrição do Pedido")
+        quantidade = st.number_input("Quantidade", min_value=0.0, format="%.2f")
+        
+        if quantidade:
+            try:
+                quantidade = float(quantidade)  # Tenta converter para float
+            except ValueError:
+                st.error("Por favor, insira um número válido.")
+                quantidade = None  # Evita processamento se a conversão falhar
+                
         status = st.selectbox("Status", ["pendente", "concluído", "cancelado"])
         valor_total = st.number_input("Valor Total", min_value=0.0, format="%.2f")
         cadastro_id = cadastro_id
-        
-
+      
         if st.form_submit_button("Adicionar Pedido"):
-            if not descricao or valor_total <= 0:
-                st.warning("Descrição e valor total são obrigatórios!")
+            if not descricao or valor_total is None or quantidade is None or valor_total <= 0 or quantidade <= 0:
+                st.warning("Descrição, valor total e quantidade são obrigatórios e precisam ser maiores que 0!")
                 return
-            
-            data = {"descricao": descricao, "status": status, "valor_total": valor_total, "cadastro_id": cadastro_id}
+                
+            data = {"descricao": descricao, "status": status, "valor_total": valor_total, "cadastro_id": cadastro_id, "quantidade": quantidade}
 
             try:
                 response = requests.post(API_URL, json=data)
@@ -56,3 +69,4 @@ def adicionar_pedido(cadastro_id):
                 st.rerun()  # Atualiza a página automaticamente
             except requests.exceptions.RequestException as e:
                 st.error(f"Erro ao adicionar pedido: {e}")
+

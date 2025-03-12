@@ -7,14 +7,20 @@ import requests
 API_URL = "https://satsystem-production-2931.up.railway.app/cadastros/auth"
 
 def autenticar():
+    # st.markdown(
+    # "<h1 style='text-align: center; font-size: 50px; color: black'>Sistema de Pedidos NFC-e</h1>",
+    # unsafe_allow_html=True
+    #     )
+    
     st.markdown(
-    "<h1 style='text-align: center; font-size: 50px; color: black'>Sistema de Pedidos SAT</h1>",
+    "<div style='text-align: center; font-size: 50px; font-weight: bold; color: black'>Sistema de Pedidos NFC-e</div>",
     unsafe_allow_html=True
-)
+        )
+
     #st.title("Sistema de Pedidos SAT")
 
     if st.session_state.get("authenticated"):
-        return st.session_state["cnpj"], True, st.session_state.get("cadastro_id")
+        return st.session_state["cnpj"], True, st.session_state.get("cadastro_id")#, st.session_state.get("status")
 
     cnpj = st.text_input("CNPJ")
     password = st.text_input("Senha", type="password")
@@ -29,9 +35,11 @@ def autenticar():
             st.session_state["authenticated"] = True
             st.session_state["cnpj"] = cnpj
             st.session_state["cadastro_id"] = response.json().get("id")  # Busca o ID do cadastro
+            #st.session_state["status"] = response.json().get("status")  # Busca o ID do cadastro
             #st.write(st.session_state)  # Debug
             st.rerun()
-
+        elif response.status_code == 403:
+            st.error("Usuário inativo. Entre em contato com o suporte.")
         else:
             st.error("CNPJ ou senha incorretos")
 

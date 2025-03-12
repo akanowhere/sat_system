@@ -27,56 +27,59 @@ from frontend.screens.cadastros import exibir_cadastro, criar_cadastro, atualiza
 
 # Código CSS para esconder o ícone do GitHub
 
-hide_github_icon = """
-<style>
-/* Esconder o link do GitHub */
-.css-1jc7ptx, 
-.e1ewe7hr3, 
-.viewerBadge_container__1QSob, 
-.styles_viewerBadge__1yB5_, 
-.viewerBadge_link__1S137, 
-.viewerBadge_text__1JaDK { 
-    display: none; 
-}
+# hide_github_icon = """
+# <style>
+# /* Esconder o link do GitHub */
+# .css-1jc7ptx, 
+# .e1ewe7hr3, 
+# .viewerBadge_container__1QSob, 
+# .styles_viewerBadge__1yB5_, 
+# .viewerBadge_link__1S137, 
+# .viewerBadge_text__1JaDK { 
+#     display: none; 
+# }
 
-/* Esconder menu principal, rodapé e cabeçalho */
-#MainMenu { visibility: hidden; }
-footer { visibility: hidden; }
-header { visibility: hidden; }
+# /* Esconder menu principal, rodapé e cabeçalho */
+# #MainMenu { visibility: hidden; }
+# footer { visibility: hidden; }
+# header { visibility: hidden; }
 
-/* Esconder o avatar do criador do app */
-img[src*="avatars.githubusercontent.com"] {
-    display: none !important;
-}
+# /* Esconder o avatar do criador do app */
+# img[src*="avatars.githubusercontent.com"] {
+#     display: none !important;
+# }
 
-/* Esconder o link do perfil */
-a[href*="share.streamlit.io/user/"] {
-    display: none !important;
-}
-</style>
+# /* Esconder o link do perfil */
+# a[href*="share.streamlit.io/user/"] {
+#     display: none !important;
+# }
+# </style>
 
-<script>
-setTimeout(function() {
-    let avatar = document.querySelector('img[data-testid="appCreatorAvatar"]');
-    if (avatar) avatar.style.display = 'none';
+# <script>
+# setTimeout(function() {
+#     let avatar = document.querySelector('img[data-testid="appCreatorAvatar"]');
+#     if (avatar) avatar.style.display = 'none';
 
-    let profileLink = document.querySelector('a[href*="share.streamlit.io/user/"]');
-    if (profileLink) profileLink.style.display = 'none';
-}, 3000); // Aguarda 3 segundos
-</script>
-"""
+#     let profileLink = document.querySelector('a[href*="share.streamlit.io/user/"]');
+#     if (profileLink) profileLink.style.display = 'none';
+# }, 3000); // Aguarda 3 segundos
+# </script>
+# """
 
 import streamlit as st
 
 # Aplicar o CSS no Streamlit
-st.markdown(hide_github_icon, unsafe_allow_html=True)
+#st.markdown(hide_github_icon, unsafe_allow_html=True)
 
+
+
+
+st.set_page_config(page_title="Main age", page_icon="📝", layout="centered")
 
 
 def main():
     #name, authenticated = autenticar()  # Obtém os dados da autenticação
     cnpj, authenticated, cadastro_id = autenticar()  # Obtém os dados da autenticação
-
 
     #st.write(f"Authenticated: {authenticated}, CNPJ: {cnpj}, Cadastro ID: {cadastro_id}")
 
@@ -84,23 +87,23 @@ def main():
         #st.sidebar.write("Debug Session State:", st.session_state)
         #st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
         st.sidebar.markdown(f"Bem-vindo, **{cnpj}**!")
-
+        #st.sidebar.markdown(f"Bem-vindo, **{status}**!")
         menu = ["Home", "Pedidos", "Pagamentos", "Cadastro"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
         if escolha == "Home":
             st.markdown(
-                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos"
-                "</h2>",
+                "</div>",
                 unsafe_allow_html=True
             )
             #st.subheader("Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos")
         elif escolha == "Pedidos":
             st.markdown(
-                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Pedidos"
-                "</h2>",
+                "</div>",
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pedidos")
@@ -108,34 +111,34 @@ def main():
             adicionar_pedido(cadastro_id)
         elif escolha == "Pagamentos":
             st.markdown(
-                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Tela de Pagamento (em construção)"
-                "</h2>",
+                "</div>",
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pagamento (em construção)")
         elif escolha == "Cadastro":
             #st.subheader("Visualizar Cadastro")
             st.markdown(
-                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Visualizar Cadastro"
-                "</h2>",
+                "</div>",
                 unsafe_allow_html=True
             )
             exibir_cadastro()
             st.markdown(
-                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Atualizar Cadastro"
-                "</h2>",
+                "</div>",
                 unsafe_allow_html=True
             )
             #st.subheader("Atualizar Cadastro")
             atualizar_cadastro()
             #st.subheader("Criar Cadastro")
             st.markdown(
-                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Criar Cadastro"
-                "</h2>",
+                "</div>",
                 unsafe_allow_html=True
             )
             criar_cadastro()
@@ -155,17 +158,17 @@ def main():
 
         if escolha == "Home":
             st.markdown(
-                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos"
-                "</h2>",
+                "</div>",
                 unsafe_allow_html=True
             )
             #st.subheader("Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos")
         elif escolha == "Pedidos":
             st.markdown(
-                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Pedidos"
-                "</h2>",
+                "</div>",
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pedidos")
@@ -173,9 +176,9 @@ def main():
             adicionar_pedido(cadastro_id)
         elif escolha == "Pagamentos":
             st.markdown(
-                "<h2 style='text-align: center; font-size: 30px; color: black;'>"
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Tela de Pagamento (em construção)"
-                "</h2>",
+                "</div>",
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pagamento (em construção)")
@@ -188,6 +191,7 @@ def main():
 
     else:
         st.warning("Por favor, faça login para acessar o sistema.")
+
 
 if __name__ == "__main__":
     main()
