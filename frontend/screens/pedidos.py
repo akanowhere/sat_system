@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+import pandas as pd
 
 # API_URL = "http://localhost:8000/pedidos/"
 # API_URL = "https://humble-yodel-57qvr7v97fvg4r-8000.app.github.dev/pedidos/"
@@ -25,7 +26,8 @@ def exibir_pedidos(cadastro_id):
         
         if isinstance(pedidos, list) and len(pedidos) > 0 and isinstance(pedidos[0], dict):
             # Exibe os últimos 10 pedidos
-            st.table(pedidos[-10:])
+            df = pd.DataFrame(pedidos)
+            st.dataframe(df.tail(10), use_container_width=True, hide_index=True)
         else:
             st.error("Sem pedidos gerados no Sitema.")
     except requests.exceptions.RequestException as e:
