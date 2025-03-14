@@ -1,5 +1,14 @@
 [build] 
 builder = "NIXPACKS"
+buildCommand = """
+  if [ -d "/usr/local/share/ca-certificates/" ]; then
+    cp certificados_digitais/*.crt /usr/local/share/ca-certificates/
+    update-ca-certificates
+  else
+    echo "Diretório de certificados não encontrado!"
+    exit 1
+  fi
+"""
 
 [deploy]
 runtime = "V2"
@@ -8,3 +17,6 @@ startCommand = "bash -c 'if [ \"$PROJECT_TYPE\" = \"backend\" ]; then uvicorn ba
 sleepApplication = false
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
+
+
+
