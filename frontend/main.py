@@ -14,6 +14,7 @@ sys.path.append('/app')
 from frontend.components.auth import autenticar  # Importa a autenticação
 from frontend.screens.pedidos import exibir_pedidos, adicionar_pedido
 from frontend.screens.cadastros import exibir_cadastro, criar_cadastro, atualizar_cadastro
+from frontend.screens.status_service import status_service
 import streamlit as st
 
 # Aplicar o CSS no Streamlit
@@ -57,7 +58,7 @@ def main():
         #st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
         st.sidebar.markdown(f"Bem-vindo, **{cnpj}**!")
         #st.sidebar.markdown(f"Bem-vindo, **{status}**!")
-        menu = ["Home", "Pedidos", "Pagamentos", "Cadastro"]
+        menu = ["Home", "Pedidos", "Pagamentos", "Cadastro", "Status Serviço"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
         if escolha == "Home":
@@ -111,13 +112,23 @@ def main():
                 unsafe_allow_html=True
             )
             criar_cadastro()
-            
+        elif escolha == "Status Serviço":
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Verificar Status do Serviço"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            status_service()
+
 
         # Lógica de logout
         if st.sidebar.button("Logout"):
             del st.session_state["authenticated"]
             del st.session_state["cnpj"]
             st.rerun()
+
+
 
     elif authenticated:
         #st.sidebar.write(f"Bem-vindo, {cnpj}!")
