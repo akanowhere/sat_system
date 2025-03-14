@@ -1,12 +1,9 @@
 [build] 
 builder = "NIXPACKS"
 buildCommand = """
-  RUN if [ -d "/usr/local/share/ca-certificates/" ]; then \
-      cp certificados_digitais/*.crt /usr/local/share/ca-certificates/ && \
-      update-ca-certificates; \
-    else \
-      echo "Diretório de certificados não encontrado!" && exit 1; \
-    fi
+  mkdir -p /usr/local/share/ca-certificates && \
+  cp certificados_digitais/*.crt /usr/local/share/ca-certificates/ && \
+  update-ca-certificates
 """
 
 [deploy]
