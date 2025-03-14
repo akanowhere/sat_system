@@ -13,7 +13,7 @@ def status_service():
 
         with st.spinner("Processando..."):
             process = subprocess.Popen(
-                ["python", "/app/sat_system/frontend/components/teste_requisicao.py"],
+                ["python", "frontend/components/teste_requisicao.py"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True
