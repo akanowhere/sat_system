@@ -1,10 +1,11 @@
 import streamlit as st
 import subprocess
+import os
 
 
 def status_service():
 
-
+    print("Diretório de trabalho atual:", os.getcwd())
 
 
     if st.button("Verificar Status"):
