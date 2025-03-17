@@ -23,6 +23,8 @@ class Cadastro(Base):
     mail = Column(String, nullable=False)
     telefone = Column(String, nullable=False)  
     password = Column(String, nullable=False)  
+    cert = Column(String, nullable=False)
+    key = Column(String, nullable=False)
 
     #pedidos = relationship("Pedido", back_populates="cadastro", cascade="all, delete-orphan") 
     pedidos = relationship("Pedido", back_populates="cadastro")
@@ -40,6 +42,8 @@ class CadastroBase(BaseModel):
     mail: str
     telefone: str 
     password: str 
+    cert: Optional[str]
+    key: Optional[str]
 
     class Config:
         from_attributes = True

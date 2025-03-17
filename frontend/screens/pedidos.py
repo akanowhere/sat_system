@@ -12,46 +12,19 @@ API_URL = "https://satsystem-production-2931.up.railway.app/pedidos/"
 # Adicionar CSS para reduzir o tamanho da fonte da tabela
 
 def exibir_pedidos(cadastro_id):
-    #print(cadastro_id)
-    with st.form(key="pedidos_view_form"):
-        try:
-            # Passar o cadastro_id como parâmetro na URL
-            #response = requests.get(f"{API_URL}?/cadastro_id={cadastro_id}")
-            response = requests.get(f"{API_URL}cadastro/{cadastro_id}")
-            response.raise_for_status()
-            pedidos = response.json()
-            #print(pedidos)
+    try:
+        response = requests.get(f"{API_URL}cadastro/{cadastro_id}")
+        response.raise_for_status()
+        pedidos = response.json()
 
-            # Debug: Verificar estrutura dos pedidos
-            # st.write("Dados recebidos:", pedidos)
-            
-            if isinstance(pedidos, list) and len(pedidos) > 0 and isinstance(pedidos[0], dict):
-                # Exibe os últimos 10 pedidos
-                df = pd.DataFrame(pedidos)
-                st.dataframe(df.tail(10), use_container_width=True, hide_index=True)
-            else:
-                st.error("Sem pedidos gerados no Sitema.")
-        except requests.exceptions.RequestException as e:
-            st.error(f"Erro ao carregar pedidos: {e}")
-        
-        submit_button = st.form_submit_button("Confirmar")
-        st.markdown(
-            """
-            <style>
-            div[data-testid="stFormSubmitButton"] {
-                visibility: hidden !important;  /* Mantém o espaço, mas oculta visualmente */
-                width: 0px !important;
-                height: 0px !important;
-                padding: 0px !important;
-                margin: 0px !important;
-                overflow: hidden !important;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True,
-            )
+        if isinstance(pedidos, list) and len(pedidos) > 0 and isinstance(pedidos[0], dict):
+            df = pd.DataFrame(pedidos)
+            st.dataframe(df.tail(10), use_container_width=True, hide_index=True)
+        else:
+            st.error("Sem pedidos gerados no Sistema.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erro ao carregar pedidos: {e}")
 
-    # Verifica se a tela deve ficar bloqueada
 
 def adicionar_pedido(cadastro_id):
     key_descricao = "descricao_" + str(time.time())
@@ -84,7 +57,7 @@ def adicionar_pedido(cadastro_id):
                 
                 st.success("Pedido Adicionado com Sucesso!")
                 
-                time.sleep(2)
+                time.sleep(1)
                 st.rerun()  # Atualiza a página automaticamente
             except requests.exceptions.RequestException as e:
                 st.error(f"Erro ao adicionar pedido: {e}")

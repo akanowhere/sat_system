@@ -38,26 +38,22 @@ header { visibility: hidden; }
 
  </style>"""
 
-st.set_page_config(page_title="Main age", page_icon="📝", layout="centered")
+st.set_page_config(page_title="Pedidos NFC-e", page_icon="📝", layout="centered")
 st.markdown(hide_github_icon, unsafe_allow_html=True)
-
-
-
-
 
 
 
 def main():
     #name, authenticated = autenticar()  # Obtém os dados da autenticação
-    cnpj, authenticated, cadastro_id = autenticar()  # Obtém os dados da autenticação
+    cnpj, authenticated, cadastro_id, licenca, certificado, chave = autenticar()  # Obtém os dados da autenticação
 
     #st.write(f"Authenticated: {authenticated}, CNPJ: {cnpj}, Cadastro ID: {cadastro_id}")
 
     if authenticated and cnpj == "admin":
         #st.sidebar.write("Debug Session State:", st.session_state)
         #st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
-        st.sidebar.markdown(f"Bem-vindo, **{cnpj}**!")
-        #st.sidebar.markdown(f"Bem-vindo, **{status}**!")
+        st.sidebar.markdown(f"Bem-vindo, **{cnpj}** sua licença em uso é **{licenca}**!")
+        #st.sidebar.markdown(f"Bem-vindo, **{certificado}**!")
         menu = ["Home", "Pedidos", "Pagamentos", "Cadastro", "Status Serviço"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
@@ -119,7 +115,7 @@ def main():
                 "</div>",
                 unsafe_allow_html=True
             )
-            status_service()
+            status_service(certificado, chave)
 
 
         # Lógica de logout
@@ -132,8 +128,10 @@ def main():
 
     elif authenticated:
         #st.sidebar.write(f"Bem-vindo, {cnpj}!")
-        st.sidebar.markdown(f"Bem-vindo, **{cnpj}**!")
-        menu = ["Home", "Pedidos", "Pagamentos"]
+        #st.sidebar.markdown(f"Bem-vindo, **{cnpj}**!")
+        st.sidebar.markdown(f"Bem-vindo, **{cnpj}** sua licença em uso é **{licenca}**!")
+        st.sidebar.markdown(f"Bem-vindo, **{certificado}**!")
+        menu = ["Home", "Pedidos", "Pagamentos", "Status Serviço"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
         if escolha == "Home":
@@ -162,6 +160,15 @@ def main():
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pagamento (em construção)")
+        elif escolha == "Status Serviço":
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Verificar Status do Serviço"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            status_service(certificado, chave)
+           
         
         if st.sidebar.button("Logout"):
             del st.session_state["authenticated"]

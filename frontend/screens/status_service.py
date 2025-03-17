@@ -1,29 +1,25 @@
 import streamlit as st
 import subprocess
 import os
+from frontend.components.status_servico import call_cadastro
 
 
-def status_service():
+def status_service(certificado, chave):
+    #call_cadastro(certificado)
+    with st.form(key="status_service_view_form"):
+        submitted = st.form_submit_button("Verificar Status")
 
-    print("Diretório de trabalho atual:", os.getcwd())
-
-
-    if st.button("Verificar Status"):
+    if submitted:
         st.write("Verificando status do serviço...")
 
         with st.spinner("Processando..."):
-            process = subprocess.Popen(
-                ["python", "frontend/components/teste_requisicao.py"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
-            )
-
-            output, error = process.communicate()
+            output, error = call_cadastro(certificado, chave)  # Chama a função diretamente
 
         st.write("Status:")
-        st.code(output)
+        st.code(output, error)
 
         if error:
-            st.write("Status Erros:")
+            st.write("Status:")
             st.code(error)
+
+# Para rodar no Streamlit, chame `status_service()` dentro de um script Streamlit

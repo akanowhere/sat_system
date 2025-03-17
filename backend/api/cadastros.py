@@ -54,7 +54,7 @@ def autenticar(login_data: LoginRequest, db: Session = Depends(get_db)):
     if cadastro.status is False:  # Verifica se o status é False
         raise HTTPException(status_code=403, detail="Usuário inativo. Entre em contato com o suporte.")
     
-    return {"authenticated": True, "id": cadastro.id, "status": cadastro.status}
+    return {"authenticated": True, "id": cadastro.id, "licenca": cadastro.licenca, "cert": cadastro.cert, "key": cadastro.key}
 
 
 @router.patch("/{cadastro_id}", response_model=CadastroBase)
