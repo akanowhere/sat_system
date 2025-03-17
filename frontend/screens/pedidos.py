@@ -50,15 +50,15 @@ def adicionar_pedido(cadastro_id):
                 return
                 
             data = {"descricao": descricao, "status": status, "valor_total": valor_total, "cadastro_id": cadastro_id, "quantidade": quantidade}
-
-            try:
-                response = requests.post(API_URL, json=data)
-                response.raise_for_status()
-                
-                st.success("Pedido Adicionado com Sucesso!")
-                
-                time.sleep(1)
-                st.rerun()  # Atualiza a página automaticamente
-            except requests.exceptions.RequestException as e:
-                st.error(f"Erro ao adicionar pedido: {e}")
+            with st.spinner("Adicionando pedido..."):
+                try:
+                    response = requests.post(API_URL, json=data)
+                    response.raise_for_status()
+                    
+                    st.success("Pedido Adicionado com Sucesso!")
+                    
+                    time.sleep(1)
+                    st.rerun()  # Atualiza a página automaticamente
+                except requests.exceptions.RequestException as e:
+                    st.error(f"Erro ao adicionar pedido: {e}")
 

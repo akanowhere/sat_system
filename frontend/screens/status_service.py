@@ -5,7 +5,6 @@ from frontend.components.status_servico import call_cadastro
 
 
 def status_service(certificado, chave):
-    #call_cadastro(certificado)
     with st.form(key="status_service_view_form"):
         submitted = st.form_submit_button("Verificar Status")
 
