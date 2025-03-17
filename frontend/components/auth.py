@@ -29,7 +29,7 @@ def autenticar():
         response = requests.post(API_URL, json={"cnpj": cnpj, "password": password})
 
         #st.write("Response JSON:", response.json())
-        print("Response JSON:", response.json())
+        #print("Response JSON:", response.json())
 
         if response.status_code == 200 and response.json().get("authenticated"):
             st.session_state["authenticated"] = True

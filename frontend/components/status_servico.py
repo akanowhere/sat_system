@@ -13,7 +13,7 @@ def call_cadastro(certificado, chave):
 
 
 
-    with tempfile.NamedTemporaryFile(delete=False, mode='wb', dir="/mnt/d/pythonDSA/sat/sat_system") as temp_cert_file:
+    with tempfile.NamedTemporaryFile(delete=False, mode='wb') as temp_cert_file:
         # Escrever o conteúdo do certificado no arquivo temporário
         temp_cert_file.write(certificado.encode('utf-8'))
         
@@ -66,16 +66,16 @@ def call_cadastro(certificado, chave):
             timeout=30
         )
 
-        print("🔹 Status Code:", response.status_code)
-        print("🔹 Resposta da SEFAZ:\n", response.text)
+        print("Status Code:", response.status_code)
+        print("Resposta da SEFAZ:\n", response.text)
 
         status = response.status_code
         sefaz = response.text
 
     except requests.exceptions.SSLError as ssl_err:
-        print("❌ Erro SSL:", ssl_err)
+        print("Erro SSL:", ssl_err)
     except requests.exceptions.RequestException as e:
-        print("❌ Erro na requisição:", e)
+        print("Erro na requisição:", e)
 
  
 
