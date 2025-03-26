@@ -6,7 +6,8 @@ import pandas as pd
 #API_URL = "http://localhost:8000/pedidos/"
 # API_URL = "https://humble-yodel-57qvr7v97fvg4r-8000.app.github.dev/pedidos/"
 # API_URL = "https://satsystem.streamlit.app/pedidos/"
-API_URL = "https://satsystem-production.up.railway.app/pedidos/"
+#API_URL = "https://satsystem-production.up.railway.app/pedidos/"
+API_URL = "https://satsystem-production-2931.up.railway.app/pedidos/"
 
 # Adicionar CSS para reduzir o tamanho da fonte da tabela
 

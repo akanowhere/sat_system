@@ -4,7 +4,11 @@ import requests
 # API de autenticação no backend
 #API_URL = "http://localhost:8000/cadastros/auth"  # Certifique-se de que está correto
 #API_URL = "http://localhost:8000/emitentes/auth"
-API_URL = "https://satsystem-production.up.railway.app/cadastros/auth"
+API_URL = "https://satsystem-production-2931.up.railway.app/emitentes/auth"
+
+
+
+#API_URL = "https://satsystem-production.up.railway.app/cadastros/auth"
 
 def autenticar():
     # st.markdown(

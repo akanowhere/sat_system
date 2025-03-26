@@ -16,7 +16,8 @@ import pandas as pd
 
 st.session_state.clear()
 
-API_URL = "https://satsystem-production.up.railway.app/emitentes/"
+#API_URL = "https://satsystem-production.up.railway.app/emitentes/"
+API_URL = "https://satsystem-production-2931.up.railway.app/emitentes/"
 
 
 
