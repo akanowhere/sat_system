@@ -13,8 +13,9 @@ sys.path.append('/app')
 
 from frontend.components.auth import autenticar  # Importa a autenticação
 from frontend.screens.pedidos import exibir_pedidos, adicionar_pedido
-from frontend.screens.cadastros import exibir_cadastro, criar_cadastro, atualizar_cadastro
+#from frontend.screens.cadastros import exibir_cadastro, criar_cadastro, atualizar_cadastro
 from frontend.screens.status_service import status_service
+from frontend.screens.emitentes import exibir_emitente, criar_emitente, atualizar_emitente
 import streamlit as st
 
 # Aplicar o CSS no Streamlit
@@ -45,7 +46,8 @@ st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 def main():
     #name, authenticated = autenticar()  # Obtém os dados da autenticação
-    cnpj, authenticated, cadastro_id, licenca, certificado, chave = autenticar()  # Obtém os dados da autenticação
+    cnpj, authenticated, emitente_id, licenca, certificado, chave = autenticar()  # Obtém os dados da autenticação
+    print("SENHA__MAIN", chave)
 
     #st.write(f"Authenticated: {authenticated}, CNPJ: {cnpj}, Cadastro ID: {cadastro_id}")
 
@@ -53,8 +55,8 @@ def main():
         #st.sidebar.write("Debug Session State:", st.session_state)
         #st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
         st.sidebar.markdown(f"Bem-vindo, **{cnpj}** sua licença em uso é **{licenca}**!")
-        #st.sidebar.markdown(f"Bem-vindo, **{certificado}**!")
-        menu = ["Home", "Pedidos", "Pagamentos", "Cadastro", "Status Serviço"]
+        #st.sidebar.markdown(f"Bem-vindo, **{cadastro_id}**!")
+        menu = ["Home", "Pedidos", "Pagamentos", "Cadastro", "Status Serviço", "Emitente"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
         if escolha == "Home":
@@ -73,8 +75,8 @@ def main():
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pedidos")
-            exibir_pedidos(cadastro_id)
-            adicionar_pedido(cadastro_id)
+            exibir_pedidos(emitente_id)
+            adicionar_pedido(emitente_id)
         elif escolha == "Pagamentos":
             st.markdown(
                 "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
@@ -115,7 +117,33 @@ def main():
                 "</div>",
                 unsafe_allow_html=True
             )
-            status_service(certificado, chave)
+            #status_service()
+            status_service(chave, certificado)
+        elif escolha == "Emitente":
+            #st.subheader("Visualizar Emitente")
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Visualizar Emitente"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            exibir_emitente()
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Atualizar Emitente"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Atualizar Emitente")
+            atualizar_emitente()
+            #st.subheader("Criar Emitente")
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Criar Emitente"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            criar_emitente()
 
 
         # Lógica de logout
@@ -130,7 +158,6 @@ def main():
         #st.sidebar.write(f"Bem-vindo, {cnpj}!")
         #st.sidebar.markdown(f"Bem-vindo, **{cnpj}**!")
         st.sidebar.markdown(f"Bem-vindo, **{cnpj}** sua licença em uso é **{licenca}**!")
-        st.sidebar.markdown(f"Bem-vindo, **{certificado}**!")
         menu = ["Home", "Pedidos", "Pagamentos", "Status Serviço"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
@@ -150,8 +177,8 @@ def main():
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pedidos")
-            exibir_pedidos(cadastro_id)
-            adicionar_pedido(cadastro_id)
+            exibir_pedidos(emitente_id)
+            adicionar_pedido(emitente_id)
         elif escolha == "Pagamentos":
             st.markdown(
                 "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
@@ -167,7 +194,7 @@ def main():
                 "</div>",
                 unsafe_allow_html=True
             )
-            status_service(certificado, chave)
+            status_service(chave, certificado)
            
         
         if st.sidebar.button("Logout"):

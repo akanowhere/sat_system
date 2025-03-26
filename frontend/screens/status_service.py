@@ -1,7 +1,8 @@
 import streamlit as st
 import subprocess
 import os
-from frontend.components.status_servico import call_cadastro
+#from frontend.components.status_servico import call_cadastro
+from frontend.components.NFeStatusServico4 import call_cadastro
 
 
 def status_service(certificado, chave):

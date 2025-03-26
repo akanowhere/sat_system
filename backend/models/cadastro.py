@@ -27,7 +27,7 @@ class Cadastro(Base):
     key = Column(String, nullable=False)
 
     #pedidos = relationship("Pedido", back_populates="cadastro", cascade="all, delete-orphan") 
-    pedidos = relationship("Pedido", back_populates="cadastro")
+    #pedidos = relationship("Pedido", back_populates="cadastro")
 
 # Modelo Pydantic para resposta
 class CadastroBase(BaseModel):

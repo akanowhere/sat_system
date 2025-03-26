@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.db.connection import get_db
 from fastapi import Query
+from backend.db.connection import get_db
 from backend.models.pedido import PedidoBase
 from backend.services.pedido_service import (
     get_pedidos as get_pedidos_service,
@@ -43,7 +43,12 @@ def deletar_pedido(pedido_id: int, db: Session = Depends(get_db)):
         return {"message": "Pedido não encontrado"}
     return {"message": "Pedido deletado com sucesso"}
 
-@router.get("/cadastro/{cadastro_id}", response_model=list[PedidoBase])
-def get_pedidos_id(cadastro_id: int, db: Session = Depends(get_db)):
+# @router.get("/cadastro/{cadastro_id}", response_model=list[PedidoBase])
+# def get_pedidos_id(cadastro_id: int, db: Session = Depends(get_db)):
+#     """ Retorna os pedidos filtrados pelo cadastro_id. """
+#     return get_pedidos_por_cadastro(db, cadastro_id)
+
+@router.get("/emitentes/{emitente_id}", response_model=list[PedidoBase])
+def get_pedidos_id(emitente_id: int, db: Session = Depends(get_db)):
     """ Retorna os pedidos filtrados pelo cadastro_id. """
-    return get_pedidos_por_cadastro(db, cadastro_id)
+    return get_pedidos_por_cadastro(db, emitente_id)

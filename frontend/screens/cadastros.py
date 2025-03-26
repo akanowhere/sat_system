@@ -10,7 +10,7 @@ import pandas as pd
 # if "cadastro_data" not in st.session_state:
 #     st.session_state["cadastro_data"] = None  # Armazena os dados da API
 
-#API_URL = "http://localhost:8000/cadastros/"
+API_URL = "http://localhost:8000/cadastros/"
 
 
 
@@ -19,7 +19,7 @@ import pandas as pd
 st.session_state.clear()
 
 #API_URL = "https://satsystem-production.up.railway.app/cadastros/"
-API_URL = "https://satsystem-production-2931.up.railway.app/cadastros/"
+#API_URL = "https://satsystem-production-2931.up.railway.app/cadastros/"
 
 
 

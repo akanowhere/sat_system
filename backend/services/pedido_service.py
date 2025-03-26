@@ -42,6 +42,6 @@ def deletar_pedido(db: Session, pedido_id: int):
     db.commit()
     return True
 
-def get_pedidos_id(db: Session, cadastro_id: int):
+def get_pedidos_id(db: Session, emitente_id: int):
     """ Retorna todos os pedidos de um determinado cadastro. """
-    return db.query(Pedido).filter(Pedido.cadastro_id == cadastro_id).all()
+    return db.query(Pedido).filter(Pedido.emitente_id == emitente_id).all()
