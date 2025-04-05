@@ -39,6 +39,7 @@ class Emitente(Base):
     cert = Column(String, nullable=False)
     senha_cert = Column(String, nullable=False)
     cod_seguranca = Column(String)
+    id_nota = Column(String, nullable=False)
 
     #pedidos = relationship("Pedido", back_populates="cadastro", cascade="all, delete-orphan") 
     pedidos = relationship("Pedido", back_populates="emitente")
@@ -73,6 +74,7 @@ class EmitenteBase(BaseModel):
     cert: Optional[str] 
     senha_cert: Optional[str]
     cod_seguranca: Optional[str]
+    id_nota: int
     
 
     class Config:
@@ -107,6 +109,7 @@ class EmitenteUpdate(BaseModel):
     cert: Optional[str] = None
     senha_cert: Optional[str] = None
     cod_seguranca: Optional[str] = None
+    id_nota: Optional[int] = None
 
     class Config:
         from_attributes = True

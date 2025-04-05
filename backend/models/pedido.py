@@ -6,6 +6,7 @@ from typing import Optional
 from backend.models.cadastro import Cadastro
 from backend.models.emitente import Emitente
 import streamlit as st
+import pytz
 
 
 from backend.db.connection import Base
@@ -18,8 +19,15 @@ class Pedido(Base):
     descricao = Column(String, nullable=False)
     status = Column(String, default="pendente")
     valor_total = Column(Float, nullable=False)
-    data_criacao = Column(DateTime, default=datetime.utcnow)
+    #data_criacao = Column(DateTime, default=datetime.utcnow)
+    data_criacao = Column(DateTime, default=lambda: datetime.now(pytz.timezone('America/Sao_Paulo')))
     quantidade = Column(Float, nullable=False)
+    chave_acesso = Column(String, nullable=True)
+    protocolo = Column(String, nullable=True)
+    status_sefaz = Column(String, nullable=True)
+    motivo = Column(String, nullable=True)
+    data_recebimento = Column(String, nullable=True)
+
 
     # Chave estrangeira
     emitente_id = Column(Integer, ForeignKey('emitente.id', ondelete='CASCADE'))
@@ -38,6 +46,11 @@ class PedidoBase(BaseModel):
     data_criacao: Optional[datetime] = None  # Opcional, será automaticamente atribuído ao criar
     emitente_id: Optional[int] = None
     quantidade: Optional[float] = None
+    chave_acesso: Optional[str] = None
+    protocolo: Optional[str] = None
+    status_sefaz: Optional[str] = None
+    motivo: Optional[str] = None
+    data_recebimento: Optional[str] = None
 
     class Config:
         from_attributes = True

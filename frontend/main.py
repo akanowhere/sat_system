@@ -45,9 +45,12 @@ st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 
 def main():
-    #name, authenticated = autenticar()  # Obtém os dados da autenticação
+    
     cnpj, authenticated, emitente_id, licenca, certificado, chave = autenticar()  # Obtém os dados da autenticação
     print("SENHA__MAIN", chave)
+    
+    #print("Response na função MAIN:", response.json() if response else "Nenhuma resposta")  # Verificando a resposta
+    
 
     #st.write(f"Authenticated: {authenticated}, CNPJ: {cnpj}, Cadastro ID: {cadastro_id}")
 
@@ -56,13 +59,23 @@ def main():
         #st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
         st.sidebar.markdown(f"Bem-vindo, **{cnpj}** sua licença em uso é **{licenca}**!")
         #st.sidebar.markdown(f"Bem-vindo, **{cadastro_id}**!")
-        menu = ["Home", "Pedidos", "Pagamentos", "Cadastro", "Status Serviço", "Emitente"]
+        menu = ["Home", "Pedidos", "Pagamentos", "Status Serviço", "Emitente"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
         if escolha == "Home":
             st.markdown(
                 "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
                 "Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            st.markdown(
+                "<div style='text-align: center; font-size: 18px; color: black; margin-top: 20px;'>"
+                "Imprima ou transforme em PDF suas NF´s no link abaixo:<br>"
+                "<a href='https://www.homologacao.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx' "
+                "target='_blank' style='color: #1a73e8; text-decoration: none;'>"
+                "https://www.homologacao.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx"
+                "</a>"
                 "</div>",
                 unsafe_allow_html=True
             )
@@ -76,7 +89,7 @@ def main():
             )
             #st.subheader("Tela de Pedidos")
             exibir_pedidos(emitente_id)
-            adicionar_pedido(emitente_id)
+            adicionar_pedido(emitente_id, chave, certificado)
         elif escolha == "Pagamentos":
             st.markdown(
                 "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
@@ -85,31 +98,6 @@ def main():
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pagamento (em construção)")
-        elif escolha == "Cadastro":
-            #st.subheader("Visualizar Cadastro")
-            st.markdown(
-                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
-                "Visualizar Cadastro"
-                "</div>",
-                unsafe_allow_html=True
-            )
-            exibir_cadastro()
-            st.markdown(
-                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
-                "Atualizar Cadastro"
-                "</div>",
-                unsafe_allow_html=True
-            )
-            #st.subheader("Atualizar Cadastro")
-            atualizar_cadastro()
-            #st.subheader("Criar Cadastro")
-            st.markdown(
-                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
-                "Criar Cadastro"
-                "</div>",
-                unsafe_allow_html=True
-            )
-            criar_cadastro()
         elif escolha == "Status Serviço":
             st.markdown(
                 "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
@@ -168,6 +156,16 @@ def main():
                 "</div>",
                 unsafe_allow_html=True
             )
+            st.markdown(
+                "<div style='text-align: center; font-size: 18px; color: black; margin-top: 20px;'>"
+                "Imprima ou transforme em PDF suas NF´s no link abaixo:<br>"
+                "<a href='https://www.homologacao.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx' "
+                "target='_blank' style='color: #1a73e8; text-decoration: none;'>"
+                "https://www.homologacao.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx"
+                "</a>"
+                "</div>",
+                unsafe_allow_html=True
+            )
             #st.subheader("Sistema Autenticador e Transmissor de Cupons Fiscais Eletrônicos")
         elif escolha == "Pedidos":
             st.markdown(
@@ -178,7 +176,7 @@ def main():
             )
             #st.subheader("Tela de Pedidos")
             exibir_pedidos(emitente_id)
-            adicionar_pedido(emitente_id)
+            adicionar_pedido(emitente_id, chave, certificado)
         elif escolha == "Pagamentos":
             st.markdown(
                 "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
