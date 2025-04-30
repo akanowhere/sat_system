@@ -13,7 +13,7 @@ sys.path.append('/app')
 
 from frontend.components.auth import autenticar  # Importa a autenticação
 from frontend.screens.pedidos import exibir_pedidos, adicionar_pedido
-#from frontend.screens.cadastros import exibir_cadastro, criar_cadastro, atualizar_cadastro
+from frontend.screens.produtos import exibir_produtos, atualizar_produtos, criar_produto, exibir_produtos_admin, atualizar_produtos_admin
 from frontend.screens.status_service import status_service
 from frontend.screens.emitentes import exibir_emitente, criar_emitente, atualizar_emitente
 import streamlit as st
