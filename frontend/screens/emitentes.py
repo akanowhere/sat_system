@@ -93,7 +93,7 @@ def atualizar_emitente():
         # 🔹 Seleção do campo a ser atualizado
         opcao = st.selectbox(
             "Escolha o campo para atualização:",
-            ["razao_social", "nome_fantasia", "cnpj", "inscricao_estadual", "cnae_fiscal", "inscricao_municipal", "inscricao_estadual_subst_tributaria", "codigo_de_regime_tributario", "endereco_logradouro", "endereco_numero", "endereco_complemento", "endereco_bairro", "endereco_cep", "endereco_pais", "endereco_uf", "endereco_municipio", "endereco_cod_municipio", "endereco_telefone", "status", "licenca", "mail", "telefone", "password", "cert", "senha_cert", "cod_seguranca"]
+            ["razao_social", "nome_fantasia", "cnpj", "inscricao_estadual", "cnae_fiscal", "inscricao_municipal", "inscricao_estadual_subst_tributaria", "codigo_de_regime_tributario", "endereco_logradouro", "endereco_numero", "endereco_complemento", "endereco_bairro", "endereco_cep", "endereco_pais", "endereco_uf", "endereco_municipio", "endereco_cod_municipio", "endereco_telefone", "status", "licenca", "mail", "telefone", "password", "cert", "senha_cert", "cod_seguranca", "id_nota"]
         )
 
         # 🔹 Novo valor para o campo escolhido
@@ -126,7 +126,7 @@ def atualizar_emitente():
                 response = requests.patch(f"{API_URL}{emitente_id}", json=update_data)
                 response.raise_for_status()
 
-                st.success("emitente atualizado com sucesso!")
+                st.success("Emitente atualizado com sucesso!")
                 time.sleep(2)
                 st.rerun()
             except requests.exceptions.RequestException as e:
@@ -137,13 +137,14 @@ def atualizar_emitente():
 
 
 def criar_emitente():
-    with st.form(key="cadastro_form", clear_on_submit=True):
+    with st.form(key="cadastro_form", clear_on_submit=False):
         if "status" not in st.session_state:
             st.session_state["status"] = True
         cnpj = st.text_input("CNPJ Estabelecimento:")
         #descricao = st.text_input("Descrição do Cadastro")
         #st.session_state["status"] = st.selectbox("Status", [True, False], index=[True, False].index(st.session_state["status"]))
         default_status = st.session_state.get("status", False)  # Se None, assume False
+        default_codigo_regime = st.session_state.get("codigo_de_regime_tributario", "1")  # Assumindo 1 como default válido
         st.session_state["status"] = st.selectbox("Status:", [True, False], index=[True, False].index(default_status))
         
         #cnpj = st.text_input("CNPJ Estabelecimento",  key="cnpj")
@@ -154,8 +155,9 @@ def criar_emitente():
         nome_fantasia = st.text_input("Nome Estabelecimento:", key="nome_fantasia")
         inscricao_estadual = st.text_input("IE Estabelecimento:", key="inscricao_estadual")
         cnae_fiscal = st.text_input("CNAE:", key="cnae_fiscal:")
-        inscricao_municipal = st.text_input("Mail Estabelecimento:", key="inscricao_municipal")
-        #codigo_de_regime_tributario = st.text_input("Telefone Estabelecimento:", key="codigo_de_regime_tributario")
+        inscricao_municipal = st.text_input("Inscrição Municiapal (*Opcional):", key="inscricao_municipal")
+        st.session_state["codigo_de_regime_tributario"] = st.selectbox("Código de Regime Tributário:", ["1", "3"], index=["1", "3"].index(default_codigo_regime))
+        #codigo_de_regime_tributario = st.text_input("Códgio Estabelecimento:", key="codigo_de_regime_tributario")
         endereco_logradouro = st.text_input("Endereço Estabelecimento:", key="endereco_logradouro")
         endereco_numero = st.text_input("Número Estabelecimento:", key="endereco_numero")
         endereco_complemento = st.text_input("Complemento Estabelecimento:", key="endereco_complemento")
@@ -168,6 +170,7 @@ def criar_emitente():
         telefone = st.text_input("Telefone Responsável:")
         cert = st.text_input("Nome Certificado Estabelecimento:")
         senha_cert = st.text_input("Senha Certificado Estabelecimento:")
+        id_nota = st.text_input("Número Inicial Série de Emissão:")
 
         if st.form_submit_button("Criar Cadastro"):
             if not password or not cnpj:
@@ -188,7 +191,7 @@ def criar_emitente():
                         "inscricao_estadual": inscricao_estadual,
                         "cnae_fiscal": cnae_fiscal,
                         "inscricao_municipal": inscricao_municipal,
-                        #"codigo_de_regime_tributario": codigo_de_regime_tributario,
+                        "codigo_de_regime_tributario": st.session_state["codigo_de_regime_tributario"],
                         "endereco_logradouro": endereco_logradouro,
                         "endereco_numero": endereco_numero,
                         "endereco_complemento": endereco_complemento,
@@ -198,7 +201,8 @@ def criar_emitente():
                         "endereco_uf": endereco_uf,
                         "endereco_municipio": endereco_municipio,
                         "cert": cert,
-                        "senha_cert": senha_cert
+                        "senha_cert": senha_cert,
+                        "id_nota": id_nota
                     }
 
             print(f"Enviando o seguinte JSON: {data}")
@@ -210,5 +214,5 @@ def criar_emitente():
                 time.sleep(2)
                 st.rerun()  # Atualiza a página automaticamente
             except requests.exceptions.RequestException as e:
-                e = ("Mail Estabelecimento, Senha, Telefone Responsável, Mail Estabelecimento, Licença, Bairro Estabelecimento, Número Estabelecimento, Endereço Estabelecimento, Telefone Estabelecimento, IE Estabelecimento, CNPJ Estabelecimento e Razão Social são obrigatórios.")
+                #e = ("Mail Estabelecimento, Senha, Telefone Responsável, Mail Estabelecimento, Licença, Bairro Estabelecimento, Número Estabelecimento, Endereço Estabelecimento, Telefone Estabelecimento, IE Estabelecimento, CNPJ Estabelecimento e Razão Social são obrigatórios.")
                 st.error(f"Erro ao adicionar cadastro: {e}")

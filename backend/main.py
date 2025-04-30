@@ -4,7 +4,8 @@ from backend.api.pedidos import router as pedidos_router
 from backend.api.pagamentos import router as pagamentos_router
 from backend.api.cadastros import router as cadastros_router
 from backend.api.emitente import router as emitentes_router
-
+from backend.api.emitente import router as emitentes_router
+from backend.api.produtos import router as produtos_router
 
 # Criação da instância FastAPI
 app = FastAPI()
@@ -16,6 +17,8 @@ app.include_router(pagamentos_router, prefix="/pagamentos", tags=["pagamentos"])
 app.include_router(cadastros_router, prefix="/cadastros", tags=["cadastros"])
 app.include_router(cadastros_router, prefix="/auth", tags=["auth"])
 app.include_router(emitentes_router, prefix="/emitentes", tags=["emitentes"])
+app.include_router(produtos_router, prefix="/produtos", tags=["produtos"])
+app.include_router(produtos_router, prefix="/produtos/admin", tags=["produtos/admin"])
 
 
 @app.get("/")

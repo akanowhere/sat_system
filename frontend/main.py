@@ -45,7 +45,7 @@ st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 
 def main():
-    
+    #name, authenticated = autenticar()  # Obtém os dados da autenticação
     cnpj, authenticated, emitente_id, licenca, certificado, chave = autenticar()  # Obtém os dados da autenticação
     print("SENHA__MAIN", chave)
     
@@ -59,9 +59,24 @@ def main():
         #st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
         st.sidebar.markdown(f"Bem-vindo, **{cnpj}** sua licença em uso é **{licenca}**!")
         #st.sidebar.markdown(f"Bem-vindo, **{cadastro_id}**!")
-        menu = ["Home", "Pedidos", "Pagamentos", "Status Serviço", "Emitente"]
+        menu = ["Home", "Pedidos", "Pagamentos", "Produtos", "Status Serviço", "Emitente"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
 
+        if escolha == "Pedidos":
+            if "pedidos_reset" not in st.session_state:
+                st.session_state["pedidos_reset"] = True  # Inicializa como True na primeira vez
+            
+            # Se for a primeira vez na tela "Pedidos", reinicia os componentes
+            if st.session_state["pedidos_reset"]:
+                # Realiza o reset de informações da tela de Pedidos
+                st.session_state["pedidos_reset"] = False  # Marca como False após o primeiro reset
+                # Resetar ou redefinir qualquer dado ou visualização da tela "Pedidos" aqui
+                st.session_state.carrinho = []
+                st.rerun()
+
+
+
+        # Página Home
         if escolha == "Home":
             st.markdown(
                 "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
@@ -71,7 +86,7 @@ def main():
             )
             st.markdown(
                 "<div style='text-align: center; font-size: 18px; color: black; margin-top: 20px;'>"
-                "Imprima ou transforme em PDF suas NF´s no link abaixo:<br>"
+                "Imprima ou transforme em PDF suas NF's no link abaixo:<br>"
                 "<a href='https://www.homologacao.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx' "
                 "target='_blank' style='color: #1a73e8; text-decoration: none;'>"
                 "https://www.homologacao.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx"
@@ -98,6 +113,33 @@ def main():
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pagamento (em construção)")
+        elif escolha == "Produtos":
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Produtos"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Tela de Pedidos")
+            #exibir_produtos(emitente_id)
+            exibir_produtos_admin()
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Atualizar Produtos"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Atualizar Emitente")
+            atualizar_produtos(emitente_id)
+            #atualizar_produtos_admin()
+            #adicionar_pedido(emitente_id, chave, certificado)
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Criar Produto"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            criar_produto()
         elif escolha == "Status Serviço":
             st.markdown(
                 "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
@@ -146,8 +188,30 @@ def main():
         #st.sidebar.write(f"Bem-vindo, {cnpj}!")
         #st.sidebar.markdown(f"Bem-vindo, **{cnpj}**!")
         st.sidebar.markdown(f"Bem-vindo, **{cnpj}** sua licença em uso é **{licenca}**!")
-        menu = ["Home", "Pedidos", "Pagamentos", "Status Serviço"]
+        menu = ["Home", "Pedidos", "Pagamentos", "Produtos", "Status Serviço"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
+
+        if "ultima_tela" not in st.session_state:
+            st.session_state.ultima_tela = escolha
+
+        # Detectar troca de tela e resetar carrinho ao sair de "Pedidos"
+        if st.session_state.ultima_tela != escolha:
+            if st.session_state.ultima_tela == "Pedidos":
+                st.session_state.carrinho = []  # ou .clear(), se já existir
+            st.session_state.ultima_tela = escolha
+
+
+        if escolha == "Pedidos":
+            if "pedidos_reset" not in st.session_state:
+                st.session_state["pedidos_reset"] = True  # Inicializa como True na primeira vez
+            
+            # Se for a primeira vez na tela "Pedidos", reinicia os componentes
+            if st.session_state["pedidos_reset"]:
+                # Realiza o reset de informações da tela de Pedidos
+                st.session_state["pedidos_reset"] = False  # Marca como False após o primeiro reset
+                # Resetar ou redefinir qualquer dado ou visualização da tela "Pedidos" aqui
+                st.rerun()
+
 
         if escolha == "Home":
             st.markdown(
@@ -185,6 +249,25 @@ def main():
                 unsafe_allow_html=True
             )
             #st.subheader("Tela de Pagamento (em construção)")
+        elif escolha == "Produtos":
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Produtos"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Tela de Pedidos")
+            exibir_produtos(emitente_id)
+            #adicionar_pedido(emitente_id, chave, certificado)
+            st.markdown(
+                "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
+                "Atualizar Produtos"
+                "</div>",
+                unsafe_allow_html=True
+            )
+            #st.subheader("Atualizar Emitente")
+            atualizar_produtos(emitente_id)
+            #adicionar_pedido(emitente_id, chave, certificado)
         elif escolha == "Status Serviço":
             st.markdown(
                 "<div style='text-align: center; font-size: 30px; font-weight: bold; color: black;'>"
