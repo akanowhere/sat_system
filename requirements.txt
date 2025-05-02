@@ -54,4 +54,4 @@ tzdata==2025.1
 urllib3==2.3.0
 uvicorn==0.34.0
 watchdog==6.0.0
-PyNFe==0.5.3
+git+https://github.com/akanowhere/PyNFe.git@main#egg=PyNFe
