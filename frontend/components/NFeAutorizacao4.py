@@ -12,6 +12,7 @@ import datetime
 import os
 from lxml import etree
 import requests
+from decimal import Decimal, ROUND_HALF_UP
 
 #https://homologacao.nfce.fazenda.sp.gov.br/ws/NFeAutorizacao4.asmx       
 
@@ -72,8 +73,11 @@ def call_pedido(senha, certificado, response_emitente, quantidade, valor_total, 
 
   certificado = os.path.abspath(os.path.join(script_dir, "..", "..", "certificados_digitais_emitentes", f"{certificado}.pfx"))
 
-  homologacao = True
 
+  if response_emitente.json().get("env") == True:
+    homologacao = True #Altere para True se for homologação
+  elif response_emitente.json().get("env") == False:
+    homologacao = False #Altere para False se for produção
 
     # emitente
   emitente = Emitente(
@@ -116,7 +120,7 @@ def call_pedido(senha, certificado, response_emitente, quantidade, valor_total, 
 
   # cliente
   cliente = Cliente(
-      razao_social='NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
+      razao_social='',
       tipo_documento='CPF',           #CPF ou CNPJ
       email='',
       #numero_documento='00403914000',
@@ -177,27 +181,44 @@ def call_pedido(senha, certificado, response_emitente, quantidade, valor_total, 
   
   # Produto
    # Produto
-  valor_bruto_total = 0.00
-  valor_tributos_aprox_total = 0.00
+  #valor_bruto_total = 0.00
+  #valor_tributos_aprox_total = 0.00
+  valor_bruto_total = Decimal('0.00')        # alterado para Decimal
+  valor_tributos_aprox_total = Decimal('0.00') # alterado para Decimal
   nItem = 1
 
   for produto in carrinho:
     print(produto)
+
+    quantidade_prod = Decimal(str(produto["quantidade"]))
+    preco_unit_prod = Decimal(str(produto["preco_unitario"]))
+    valor_tributos_aprox_porcent = Decimal(str(produto["valor_tributos_aprox"]))
+
   
-  
-    valor_bruto = (produto["quantidade"] * produto["preco_unitario"])
-    valor_final =  (quantidade*produto_selecionado["preco_unitario"])
-    valor_tributos_aprox = round(valor_bruto*produto["valor_tributos_aprox"],2)
-    valor_total_unit = (produto["quantidade"] * produto["preco_unitario"])
+    #valor_bruto = (produto["quantidade"] * produto["preco_unitario"])
+    valor_bruto = (quantidade_prod * preco_unit_prod).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)  # <-- ARREDONDAMENTO AQUI
+
+    #valor_final =  (quantidade*produto_selecionado["preco_unitario"])
+    valor_final = (Decimal(str(quantidade)) * Decimal(str(produto_selecionado["preco_unitario"]))).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)  # <-- ARREDONDAMENTO AQUI
+
+    #valor_tributos_aprox = round(valor_bruto*produto["valor_tributos_aprox"],2)
+    valor_tributos_aprox = (valor_bruto * valor_tributos_aprox_porcent).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)  # <-- ARREDONDAMENTO AQUI
+
+    #valor_total_unit = (produto["quantidade"] * produto["preco_unitario"])
+    valor_total_unit = (quantidade_prod * preco_unit_prod).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)  # <-- ARREDONDAMENTO AQUI
+
     valor_bruto_total += valor_bruto
     valor_tributos_aprox_total += valor_tributos_aprox
 
     print("Response preco_unitario:", produto_selecionado["preco_unitario"] ,"tipo", type(produto_selecionado["preco_unitario"] ))
     print("Response QUANTIDADE___________________________:",quantidade,"tipo", type(quantidade))
     print("Response VALOR TOTAL___________________________:",valor_total,"tipo", type(valor_total))
-    print("Response VALOR BRUTO___________________________:",valor_bruto, "tipo", type(valor_bruto))
-    print("Response VALOR FINAL___________________________:",valor_final,"tipo", type(valor_final))
-    print("Response valor_tributos_aprox___________________________:",valor_tributos_aprox,"tipo", type(valor_final))
+    #print("Response VALOR BRUTO___________________________:",valor_bruto, "tipo", type(valor_bruto))
+    print("Response VALOR BRUTO___________________________:", valor_bruto)
+    #print("Response VALOR FINAL___________________________:",valor_final,"tipo", type(valor_final))
+    print("Response VALOR FINAL___________________________:", valor_final)
+    #print("Response valor_tributos_aprox___________________________:",valor_tributos_aprox,"tipo", type(valor_final))
+    print("Response valor_tributos_aprox___________________________:", valor_tributos_aprox)
     print("Response VALOR BRUTO___________________________:",valor_bruto)
     print("Response VALOR FINAL___________________________:",valor_final)
     print("Response VALOR UNIT___________________________:",valor_total_unit)
@@ -220,17 +241,21 @@ def call_pedido(senha, certificado, response_emitente, quantidade, valor_total, 
         ean='SEM GTIN',
         ean_tributavel='SEM GTIN',
         #quantidade_comercial=Decimal(quantidade),
-        quantidade_comercial=Decimal(produto["quantidade"]),
+        #quantidade_comercial=Decimal(produto["quantidade"]),
+        quantidade_comercial=quantidade_prod,
         #quantidade_comercial=Decimal('12'),        # 12 unidades
         #valor_unitario_comercial=Decimal('9.75'),
         #valor_unitario_comercial=Decimal(valor_total),  # preço unitário
-        valor_unitario_comercial=Decimal(produto["preco_unitario"]),  ###### preço unitário
+        #valor_unitario_comercial=Decimal(produto["preco_unitario"]),  ###### preço unitário
+        valor_unitario_comercial=preco_unit_prod,
         #valor_total_bruto=Decimal('117.00'), 
-        valor_total_bruto = Decimal(valor_bruto),      # preço total
+        valor_total_bruto=valor_bruto,
+        #valor_total_bruto = Decimal(valor_bruto),      # preço total
         #unidade_tributavel='UN',
         unidade_tributavel=produto["unidade_tributavel"],
         #quantidade_tributavel=Decimal(quantidade),
-        quantidade_tributavel=Decimal(produto["quantidade"]),
+        #quantidade_tributavel=Decimal(produto["quantidade"]),
+        quantidade_tributavel=quantidade_prod,
         #valor_unitario_tributavel=Decimal(valor_total),################
         #valor_unitario_tributavel=Decimal(produto_selecionado["preco_unitario"] ),
         valor_unitario_tributavel=Decimal(produto["preco_unitario"]),
@@ -324,8 +349,19 @@ def call_pedido(senha, certificado, response_emitente, quantidade, valor_total, 
   # token de homologacao
   token = '000001'
 
+  
+  # token de produçãp
+  # token = '1'
+
+  if response_emitente.json().get("env") == True:
+    # csc de homologação
+    csc = response_emitente.json().get("cod_seguranca")
+  elif response_emitente.json().get("env") == False:
+    # csc de produção
+    csc = response_emitente.json().get("cod_seguranca_prod")
+
   # csc de homologação
-  csc = response_emitente.json().get("cod_seguranca")
+  #csc = response_emitente.json().get("cod_seguranca")
 
   # gera e adiciona o qrcode no xml NT2015/003
   xml_com_qrcode = SerializacaoQrcode().gerar_qrcode(token, csc, xml)
@@ -397,16 +433,7 @@ def call_pedido(senha, certificado, response_emitente, quantidade, valor_total, 
 #def call_pedido_sem_cpf(senha, certificado, response_emitente, forma_pagamento_codigo):
 def call_pedido_sem_cpf(senha, certificado, response_emitente, quantidade, valor_total, forma_pagamento_codigo, produtos_nome, produto_selecionado, carrinho):
 
-#def call_pedido():
 
-
-  # valor_bruto = (quantidade*valor_total)
-  # print(valor_bruto)
-  # print("Response JSON:", response_emitente.json())
-  # print('________________TIPO VAR',type(valor_bruto))
-  # input("TESTE")
-  #certificado = "/mnt/d/pythonDSA/sat/sat_system/certificados_digitais/JP_E_SOUZA_SOLUCOES_2024.pfx"
-  #senha = 'tlaush2020'
   print("Response JSON:", response_emitente.json())
   print("Response FORMA DE PAGAMNETO_________:", forma_pagamento_codigo)
   print("Response PRODUTO NOME_________:",produtos_nome)
@@ -421,34 +448,17 @@ def call_pedido_sem_cpf(senha, certificado, response_emitente, quantidade, valor
   
   
   
-  #valor_bruto = (quantidade*valor_total)
-  #valor_bruto = (quantidade*produto_selecionado["preco_unitario"])
-  #valor_bruto = (carrinho[0]["quantidade"] * carrinho[0]["preco_unitario"])
-  #valor_final =  (quantidade*produto_selecionado["preco_unitario"])
-  #valor_tributos_aprox = (valor_final*produto_selecionado["valor_tributos_aprox"])
-  #valor_tributos_aprox = (valor_bruto*carrinho[0]["valor_tributos_aprox"])
-  #valor_tributos_aprox = round(valor_bruto*carrinho[0]["valor_tributos_aprox"],2)
-  #valor_total_unit = (carrinho[0]["quantidade"] * carrinho[0]["preco_unitario"])
-  #valor_total = sum(item['quantidade'] * item['preco_unitario'] for item in carrinho)
   
-
-  # print("Response preco_unitario:", produto_selecionado["preco_unitario"] ,"tipo", type(produto_selecionado["preco_unitario"] ))
-  # print("Response QUANTIDADE___________________________:",quantidade,"tipo", type(quantidade))
-  # print("Response VALOR TOTAL___________________________:",valor_total,"tipo", type(valor_total))
-  # print("Response VALOR BRUTO___________________________:",valor_bruto, "tipo", type(valor_bruto))
-  # print("Response VALOR FINAL___________________________:",valor_final,"tipo", type(valor_final))
-  # print("Response valor_tributos_aprox___________________________:",valor_tributos_aprox,"tipo", type(valor_final))
-  # print("Response VALOR BRUTO___________________________:",valor_bruto)
-  # print("Response VALOR FINAL___________________________:",valor_final)
-  # print("Response VALOR UNIT___________________________:",valor_total_unit)
-
-
-  #valor_bruto = (quantidade*produto_selecionado["preco_unitario"])
   uf = 'sp'
 
   certificado = os.path.abspath(os.path.join(script_dir, "..", "..", "certificados_digitais_emitentes", f"{certificado}.pfx"))
 
-  homologacao = True
+  #homologacao = True
+
+  if response_emitente.json().get("env") == True:
+    homologacao = True #Altere para True se for homologação
+  elif response_emitente.json().get("env") == False:
+    homologacao = False #Altere para False se for produção
 
 
     # emitente
@@ -471,25 +481,7 @@ def call_pedido_sem_cpf(senha, certificado, response_emitente, quantidade, valor
   )
 
 
-  # emitente
-  # emitente = Emitente(
-  #     #razao_social = response_emitente.json().get("razao_social")
-  #     razao_social='NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-  #     nome_fantasia='Nome Fantasia da Empresa',
-  #     cnpj='46780934000194',           # cnpj apenas números
-  #     codigo_de_regime_tributario='1', # 1 para simples nacional ou 3 para normal
-  #     inscricao_estadual='956224310481', # numero de IE da empresa
-  #     inscricao_municipal='',
-  #     cnae_fiscal='9999999',           # cnae apenas números
-  #     endereco_logradouro='Rua da Paz',
-  #     endereco_numero='666',
-  #     endereco_bairro='Sossego',
-  #     endereco_municipio='São Paulo',
-  #     endereco_uf='SP',
-  #     endereco_cep='01002000',
-  #     endereco_pais=CODIGO_BRASIL
-  # )
-
+  
   # cliente
   cliente = Cliente(
       razao_social='NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
@@ -542,31 +534,55 @@ def call_pedido_sem_cpf(senha, certificado, response_emitente, quantidade, valor
 
 
   # Produto
-  valor_bruto_total = 0.00
-  valor_tributos_aprox_total = 0.00
+  #valor_bruto_total = 0.00
+  #valor_tributos_aprox_total = 0.00
+  valor_bruto_total = Decimal('0.00')        # alterado para Decimal
+  valor_tributos_aprox_total = Decimal('0.00') # alterado para Decimal
   nItem = 1
 
   for produto in carrinho:
     print(produto)
   
-  
-    valor_bruto = (produto["quantidade"] * produto["preco_unitario"])
-    valor_final =  (quantidade*produto_selecionado["preco_unitario"])
-    valor_tributos_aprox = round(valor_bruto*produto["valor_tributos_aprox"],2)
-    valor_total_unit = (produto["quantidade"] * produto["preco_unitario"])
+
+    quantidade_prod = Decimal(str(produto["quantidade"]))
+    preco_unit_prod = Decimal(str(produto["preco_unitario"]))
+    valor_tributos_aprox_porcent = Decimal(str(produto["valor_tributos_aprox"]))
+
+
+    #valor_bruto = (produto["quantidade"] * produto["preco_unitario"])
+    valor_bruto = (quantidade_prod * preco_unit_prod).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)  # <-- ARREDONDAMENTO AQUI
+    
+    #valor_final =  (quantidade*produto_selecionado["preco_unitario"])
+    valor_final = (Decimal(str(quantidade)) * Decimal(str(produto_selecionado["preco_unitario"]))).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)  # <-- ARREDONDAMENTO AQUI
+
+
+
+    #valor_tributos_aprox = round(valor_bruto*produto["valor_tributos_aprox"],2)
+    valor_tributos_aprox = (valor_bruto * valor_tributos_aprox_porcent).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)  # <-- ARREDONDAMENTO AQUI
+    
+    #valor_total_unit = (produto["quantidade"] * produto["preco_unitario"])
+    valor_total_unit = (quantidade_prod * preco_unit_prod).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)  # <-- ARREDONDAMENTO AQUI
+
     valor_bruto_total += valor_bruto
     valor_tributos_aprox_total += valor_tributos_aprox
 
     print("Response preco_unitario:", produto_selecionado["preco_unitario"] ,"tipo", type(produto_selecionado["preco_unitario"] ))
     print("Response QUANTIDADE___________________________:",quantidade,"tipo", type(quantidade))
     print("Response VALOR TOTAL___________________________:",valor_total,"tipo", type(valor_total))
-    print("Response VALOR BRUTO___________________________:",valor_bruto, "tipo", type(valor_bruto))
-    print("Response VALOR FINAL___________________________:",valor_final,"tipo", type(valor_final))
-    print("Response valor_tributos_aprox___________________________:",valor_tributos_aprox,"tipo", type(valor_final))
+    #print("Response VALOR BRUTO___________________________:",valor_bruto, "tipo", type(valor_bruto))
+    print("Response VALOR BRUTO___________________________:", valor_bruto)
+    #print("Response VALOR FINAL___________________________:",valor_final,"tipo", type(valor_final))
+    print("Response VALOR FINAL___________________________:", valor_final)
+    #print("Response valor_tributos_aprox___________________________:",valor_tributos_aprox,"tipo", type(valor_final))
+    print("Response valor_tributos_aprox___________________________:", valor_tributos_aprox)
     print("Response VALOR BRUTO___________________________:",valor_bruto)
     print("Response VALOR FINAL___________________________:",valor_final)
     print("Response VALOR UNIT___________________________:",valor_total_unit)
 
+      
+    
+    
+    
 
 
     nota_fiscal.adicionar_produto_servico(
@@ -578,6 +594,7 @@ def call_pedido_sem_cpf(senha, certificado, response_emitente, quantidade, valor
         #ncm='21069090',
         ncm=produto["ncm"],
         #cest='0100100',                            # NT2015/003
+        #cest=produto["cest"],
         #cfop='5102',
         cfop=produto["cfop"],
         #unidade_comercial='UN',
@@ -585,17 +602,21 @@ def call_pedido_sem_cpf(senha, certificado, response_emitente, quantidade, valor
         ean='SEM GTIN',
         ean_tributavel='SEM GTIN',
         #quantidade_comercial=Decimal(quantidade),
-        quantidade_comercial=Decimal(produto["quantidade"]),
+        #quantidade_comercial=Decimal(produto["quantidade"]),
+        quantidade_comercial=quantidade_prod,
         #quantidade_comercial=Decimal('12'),        # 12 unidades
         #valor_unitario_comercial=Decimal('9.75'),
         #valor_unitario_comercial=Decimal(valor_total),  # preço unitário
-        valor_unitario_comercial=Decimal(produto["preco_unitario"]),  ###### preço unitário
+        #valor_unitario_comercial=Decimal(produto["preco_unitario"]),  ###### preço unitário
+        valor_unitario_comercial=preco_unit_prod,
         #valor_total_bruto=Decimal('117.00'), 
-        valor_total_bruto = Decimal(valor_bruto),      # preço total
+        valor_total_bruto=valor_bruto,
+        #valor_total_bruto = Decimal(valor_bruto),      # preço total
         #unidade_tributavel='UN',
         unidade_tributavel=produto["unidade_tributavel"],
         #quantidade_tributavel=Decimal(quantidade),
-        quantidade_tributavel=Decimal(produto["quantidade"]),
+        #quantidade_tributavel=Decimal(produto["quantidade"]),
+        quantidade_tributavel=quantidade_prod,
         #valor_unitario_tributavel=Decimal(valor_total),################
         #valor_unitario_tributavel=Decimal(produto_selecionado["preco_unitario"] ),
         valor_unitario_tributavel=Decimal(produto["preco_unitario"]),
@@ -615,111 +636,16 @@ def call_pedido_sem_cpf(senha, certificado, response_emitente, quantidade, valor
         #cofins_modalidade='07', # # ("01", "Margem Valor Agregado (%)"), ("02", "Pauta (valor)"), ("03", "Preço Tabelado Máx. (valor)"), ("04", "Valor da operação"),  ("05", "Operação Tributável (alíquota diferenciada)"), ("06", "Outros"), ("07", "Operação Isenta da Contribuição"),("08", "Operação sem Incidência da Contribuição"), ("09", "Operação com Suspensão da Contribuição")
         cofins_modalidade=produto["cofins_modalidade"],
         #valor_tributos_aprox='10.06'
-        valor_tributos_aprox= str(valor_tributos_aprox)
+        #valor_tributos_aprox= str(valor_tributos_aprox)
+        valor_tributos_aprox=str(valor_tributos_aprox),  # mantendo string pois parece ser esperado assim
         #valor_tributos_aprox=Decimal(valor_tributos_aprox)
         )
     nItem += 1
-  nota_fiscal.totais_tributos_aproximado = valor_tributos_aprox_total
+  #nota_fiscal.totais_tributos_aproximado = valor_tributos_aprox_total
+  nota_fiscal.totais_tributos_aproximado = valor_tributos_aprox_total.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)  # <-- ARREDONDAMENTO AQUI
 
 
-  # nota_fiscal.adicionar_produto_servico(
-  #     #codigo='000328',                           # id do produto
-  #     codigo=carrinho[0]["codigo"],
-  #     #descricao='NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-  #     #descricao=produtos_nome,
-  #     descricao=carrinho[0]["descricao"],
-  #     #ncm='21069090',
-  #     ncm=carrinho[0]["ncm"],
-  #     #cest='0100100',                            # NT2015/003
-  #     #cfop='5102',
-  #     cfop=carrinho[0]["cfop"],
-  #     #unidade_comercial='UN',
-  #     unidade_comercial=carrinho[0]["unidade_tributavel"],
-  #     ean='SEM GTIN',
-  #     ean_tributavel='SEM GTIN',
-  #     #quantidade_comercial=Decimal(quantidade),
-  #     quantidade_comercial=Decimal(carrinho[0]["quantidade"]),
-  #     #quantidade_comercial=Decimal('12'),        # 12 unidades
-  #     #valor_unitario_comercial=Decimal('9.75'),
-  #     #valor_unitario_comercial=Decimal(valor_total),  # preço unitário
-  #     valor_unitario_comercial=Decimal(carrinho[0]["preco_unitario"]),  ###### preço unitário
-  #     #valor_total_bruto=Decimal('117.00'), 
-  #     valor_total_bruto = Decimal(valor_bruto),      # preço total
-  #     #unidade_tributavel='UN',
-  #     unidade_tributavel=carrinho[0]["unidade_tributavel"],
-  #     #quantidade_tributavel=Decimal(quantidade),
-  #     quantidade_tributavel=Decimal(carrinho[0]["quantidade"]),
-  #     #valor_unitario_tributavel=Decimal(valor_total),################
-  #     #valor_unitario_tributavel=Decimal(produto_selecionado["preco_unitario"] ),
-  #     valor_unitario_tributavel=Decimal(carrinho[0]["preco_unitario"]),
-  #     #quantidade_tributavel=Decimal('12'),
-  #     #valor_unitario_tributavel=Decimal('9.75'),
-  #     ind_total=1,
-  #     # numero_pedido='12345',                   # xPed
-  #     # numero_item='123456',                    # nItemPed
-  #     icms_modalidade='102', # 101	Tributada com permissão de crédito  102	Tributada sem permissão de crédito 103	Isenção do ICMS   201	Tributada com permissão de crédito e com cobrança do ICMS por Substituição Tributária (ST)  202	Tributada sem permissão de crédito e com cobrança do ICMS por ST   203	Isenção do ICMS e com cobrança do ICMS por ST  300	Imune  400	Não tributada pelo Simples Nacional  500	ICMS cobrado anteriormente por substituição tributária (ST) ou por antecipação   900	Outros
-  #     #icms_modalidade='102',
-  #     #icms_origem=0,  # 0	Nacional – exceto as indicadas nos códigos 3, 4, 5 e 8 -- 1	Estrangeira – Importação direta --2	Estrangeira – Adquirida no mercado interno ---3	Nacional – com conteúdo de importação superior a 40%    ----4	Nacional – produzida com processo básico da ZFM  ----   5	Nacional – com conteúdo de importação inferior a 40%   ---- 6	Estrangeira – Importação direta sem similar nacional ---- 7	Estrangeira – Adquirida no mercado interno sem similar nacional   --- 8	Nacional – conteúdo de importação entre 70% e 100%
-  #     icms_origem=carrinho[0]["origem_icms"],
-  #     #icms_csosn='400', # ("101", "Tributada pelo Simples Nacional com permissão de crédito"),("102", "Tributada pelo Simples Nacional sem permissão de crédito"), ("103", "Isenção do ICMS no Simples Nacional para faixa de receita bruta"),("201", "Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária"),("202", "Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária"),("203", "Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária"),("300", "Imune"),("400", "Não tributada pelo Simples Nacional"),("500", "ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"),("900", "Outros")
-  #     icms_csosn=carrinho[0]["csosn"],
-  #     #pis_modalidade='07', # ("01", "Margem Valor Agregado (%)"), ("02", "Pauta (valor)"), ("03", "Preço Tabelado Máx. (valor)"), ("04", "Valor da operação"),  ("05", "Operação Tributável (alíquota diferenciada)"), ("06", "Outros"), ("07", "Operação Isenta da Contribuição"),("08", "Operação sem Incidência da Contribuição"), ("09", "Operação com Suspensão da Contribuição")
-  #     pis_modalidade=carrinho[0]["pis_modalidade"],
-  #     #cofins_modalidade='07', # # ("01", "Margem Valor Agregado (%)"), ("02", "Pauta (valor)"), ("03", "Preço Tabelado Máx. (valor)"), ("04", "Valor da operação"),  ("05", "Operação Tributável (alíquota diferenciada)"), ("06", "Outros"), ("07", "Operação Isenta da Contribuição"),("08", "Operação sem Incidência da Contribuição"), ("09", "Operação com Suspensão da Contribuição")
-  #     cofins_modalidade=carrinho[0]["cofins_modalidade"],
-  #     #valor_tributos_aprox='10.06'
-  #     valor_tributos_aprox= str(valor_tributos_aprox)
-  #     #valor_tributos_aprox=Decimal(valor_tributos_aprox)
-  #     )
-  #nItem += 1
 
-    # Atualiza o valor total da nota
-  #nota_fiscal.totais_tributos_aproximado = total_valor_bruto
-  # nota_fiscal.adicionar_produto_servico(
-  #     #codigo='000328',                           # id do produto
-  #     codigo=produto_selecionado["codigo"],
-  #     #descricao='NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-  #     #descricao=produtos_nome,
-  #     descricao=produto_selecionado["descricao"],
-  #     #ncm='21069090',
-  #     ncm=produto_selecionado["ncm"],
-  #     #cest='0100100',                            # NT2015/003
-  #     #cfop='5102',
-  #     cfop=produto_selecionado["cfop"],
-  #     #unidade_comercial='UN',
-  #     unidade_comercial=produto_selecionado["unidade_tributavel"],
-  #     ean='SEM GTIN',
-  #     ean_tributavel='SEM GTIN',
-  #     quantidade_comercial=Decimal(quantidade),
-  #     #quantidade_comercial=Decimal('12'),        # 12 unidades
-  #     #valor_unitario_comercial=Decimal('9.75'),
-  #     #valor_unitario_comercial=Decimal(valor_total),  # preço unitário
-  #     valor_unitario_comercial=Decimal(produto_selecionado["preco_unitario"] ),  ###### preço unitário
-  #     #valor_total_bruto=Decimal('117.00'), 
-  #     valor_total_bruto = Decimal(valor_bruto),      # preço total
-  #     #unidade_tributavel='UN',
-  #     unidade_tributavel=produto_selecionado["unidade_tributavel"],
-  #     quantidade_tributavel=Decimal(quantidade),
-  #     #valor_unitario_tributavel=Decimal(valor_total),################
-  #     valor_unitario_tributavel=Decimal(produto_selecionado["preco_unitario"] ),
-  #     #quantidade_tributavel=Decimal('12'),
-  #     #valor_unitario_tributavel=Decimal('9.75'),
-  #     ind_total=1,
-  #     # numero_pedido='12345',                   # xPed
-  #     # numero_item='123456',                    # nItemPed
-  #     icms_modalidade='102', # 101	Tributada com permissão de crédito  102	Tributada sem permissão de crédito 103	Isenção do ICMS   201	Tributada com permissão de crédito e com cobrança do ICMS por Substituição Tributária (ST)  202	Tributada sem permissão de crédito e com cobrança do ICMS por ST   203	Isenção do ICMS e com cobrança do ICMS por ST  300	Imune  400	Não tributada pelo Simples Nacional  500	ICMS cobrado anteriormente por substituição tributária (ST) ou por antecipação   900	Outros
-  #     #icms_modalidade='102',
-  #     #icms_origem=0,  # 0	Nacional – exceto as indicadas nos códigos 3, 4, 5 e 8 -- 1	Estrangeira – Importação direta --2	Estrangeira – Adquirida no mercado interno ---3	Nacional – com conteúdo de importação superior a 40%    ----4	Nacional – produzida com processo básico da ZFM  ----   5	Nacional – com conteúdo de importação inferior a 40%   ---- 6	Estrangeira – Importação direta sem similar nacional ---- 7	Estrangeira – Adquirida no mercado interno sem similar nacional   --- 8	Nacional – conteúdo de importação entre 70% e 100%
-  #     icms_origem=produto_selecionado["origem_icms"],
-  #     #icms_csosn='400', # ("101", "Tributada pelo Simples Nacional com permissão de crédito"),("102", "Tributada pelo Simples Nacional sem permissão de crédito"), ("103", "Isenção do ICMS no Simples Nacional para faixa de receita bruta"),("201", "Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária"),("202", "Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária"),("203", "Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária"),("300", "Imune"),("400", "Não tributada pelo Simples Nacional"),("500", "ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"),("900", "Outros")
-  #     icms_csosn=produto_selecionado["csosn"],
-  #     #pis_modalidade='07', # ("01", "Margem Valor Agregado (%)"), ("02", "Pauta (valor)"), ("03", "Preço Tabelado Máx. (valor)"), ("04", "Valor da operação"),  ("05", "Operação Tributável (alíquota diferenciada)"), ("06", "Outros"), ("07", "Operação Isenta da Contribuição"),("08", "Operação sem Incidência da Contribuição"), ("09", "Operação com Suspensão da Contribuição")
-  #     pis_modalidade=produto_selecionado["pis_modalidade"],
-  #     #cofins_modalidade='07', # # ("01", "Margem Valor Agregado (%)"), ("02", "Pauta (valor)"), ("03", "Preço Tabelado Máx. (valor)"), ("04", "Valor da operação"),  ("05", "Operação Tributável (alíquota diferenciada)"), ("06", "Outros"), ("07", "Operação Isenta da Contribuição"),("08", "Operação sem Incidência da Contribuição"), ("09", "Operação com Suspensão da Contribuição")
-  #     cofins_modalidade=produto_selecionado["cofins_modalidade"],
-  #     valor_tributos_aprox='21.06'
-  #     #valor_tributos_aprox=Decimal(valor_tributos_aprox)
-  #     )
     
 
   # responsável técnico
@@ -754,7 +680,14 @@ def call_pedido_sem_cpf(senha, certificado, response_emitente, quantidade, valor
 
   # csc de homologação
   #csc = 'ad438d2a-dfbe-4187-a97d-80cfa2a044d9'
-  csc=response_emitente.json().get("cod_seguranca")
+
+  if response_emitente.json().get("env") == True:
+    # csc de homologação
+    csc = response_emitente.json().get("cod_seguranca")
+  elif response_emitente.json().get("env") == False:
+    # csc de produção
+    csc = response_emitente.json().get("cod_seguranca_prod")
+  #csc=response_emitente.json().get("cod_seguranca")
 
   # gera e adiciona o qrcode no xml NT2015/003
   xml_com_qrcode = SerializacaoQrcode().gerar_qrcode(token, csc, xml)

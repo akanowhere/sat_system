@@ -93,11 +93,18 @@ def atualizar_emitente():
         # 🔹 Seleção do campo a ser atualizado
         opcao = st.selectbox(
             "Escolha o campo para atualização:",
-            ["razao_social", "nome_fantasia", "cnpj", "inscricao_estadual", "cnae_fiscal", "inscricao_municipal", "inscricao_estadual_subst_tributaria", "codigo_de_regime_tributario", "endereco_logradouro", "endereco_numero", "endereco_complemento", "endereco_bairro", "endereco_cep", "endereco_pais", "endereco_uf", "endereco_municipio", "endereco_cod_municipio", "endereco_telefone", "status", "licenca", "mail", "telefone", "password", "cert", "senha_cert", "cod_seguranca", "id_nota"]
+            [
+                "razao_social", "nome_fantasia", "cnpj", "inscricao_estadual", "cnae_fiscal",
+                "inscricao_municipal", "inscricao_estadual_subst_tributaria", "codigo_de_regime_tributario",
+                "endereco_logradouro", "endereco_numero", "endereco_complemento", "endereco_bairro",
+                "endereco_cep", "endereco_pais", "endereco_uf", "endereco_municipio",
+                "endereco_cod_municipio", "endereco_telefone", "status", "licenca", "mail", "telefone",
+                "password", "cert", "senha_cert", "cod_seguranca", "id_nota", "env", "cod_seguranca_prod"  # 👈 novos campos aqui
+            ]
         )
 
         # 🔹 Novo valor para o campo escolhido
-        novo_valor = st.text_input(f"Novo valor:")
+        novo_valor = st.text_input("Novo valor:")
 
         # 🔹 Botão para atualizar o emitente
         if st.form_submit_button("Atualizar emitente"):
@@ -110,13 +117,19 @@ def atualizar_emitente():
 
             try:
                 # 🔹 Converte os tipos de dados corretamente
-                if opcao == "status":
+                if opcao in ["status", "env"]:
                     novo_valor = novo_valor.lower() in ["true", "1", "yes", "sim"]
                 elif opcao == "licenca":
                     try:
                         novo_valor = int(novo_valor)
                     except ValueError:
                         st.error("O campo 'licenca' deve ser um número inteiro.")
+                        return
+                elif opcao == "id_nota":
+                    try:
+                        novo_valor = int(novo_valor)
+                    except ValueError:
+                        st.error("O campo 'id_nota' deve ser um número inteiro.")
                         return
 
                 # 🔹 Monta o JSON para enviar na requisição
@@ -129,6 +142,7 @@ def atualizar_emitente():
                 st.success("Emitente atualizado com sucesso!")
                 time.sleep(2)
                 st.rerun()
+
             except requests.exceptions.RequestException as e:
                 st.error(f"Erro ao atualizar emitente: {e}")
                 time.sleep(2)

@@ -39,7 +39,7 @@ def exibir_pedidos(emitente_id):
 # Verifica se a tela deve ficar bloqueada
 
 def adicionar_pedido(cadastro_id, chave, certificado):
-    st.write("VERSÃO DO STREAMLIT:", st.__version__)
+    #st.write("VERSÃO DO STREAMLIT:", st.__version__)
 
     key_descricao = "descricao_" + str(time.time())
     
@@ -74,10 +74,15 @@ def adicionar_pedido(cadastro_id, chave, certificado):
         #     [nome for nome, codigo in produtos],  # Mostra apenas o nome
         #     index=[i for i, v in enumerate(produtos) if v[0] == default_produtos][0]  # Definindo o índice corretamente
         # )
+        # produtos_nome = st.selectbox(
+        #     "Descrição do Pedido:",
+        #     [nome for nome, _ in produtos]  # Mostra apenas a descrição dos produtos
+        # )
         produtos_nome = st.selectbox(
             "Descrição do Pedido:",
-            [nome for nome, _ in produtos]  # Mostra apenas a descrição dos produtos
+            [nome for nome, _ in sorted(produtos, key=lambda x: x[1])]  # Ordena por ID (código)
         )
+
         # Obter o código do produto selecionado
         #produto_codigo = next(codigo for nome, codigo in produtos if nome == produtos_nome)
         produto_id = next(codigo for nome, codigo in produtos if nome == produtos_nome)

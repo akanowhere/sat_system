@@ -40,6 +40,8 @@ class Emitente(Base):
     senha_cert = Column(String, nullable=False)
     cod_seguranca = Column(String)
     id_nota = Column(String, nullable=False)
+    env = Column(Boolean, default=False)  # Ambiente (produção ou homologação)
+    cod_seguranca_prod = Column(String)  # Código de segurança de produção
 
     #pedidos = relationship("Pedido", back_populates="cadastro", cascade="all, delete-orphan") 
     pedidos = relationship("Pedido", back_populates="emitente")
@@ -75,6 +77,8 @@ class EmitenteBase(BaseModel):
     senha_cert: Optional[str]
     cod_seguranca: Optional[str]
     id_nota: int
+    env: Optional[bool] = False
+    cod_seguranca_prod: Optional[str]
     
 
     class Config:
@@ -110,6 +114,8 @@ class EmitenteUpdate(BaseModel):
     senha_cert: Optional[str] = None
     cod_seguranca: Optional[str] = None
     id_nota: Optional[int] = None
+    env: Optional[bool] = None
+    cod_seguranca_prod: Optional[str] = None
 
     class Config:
         from_attributes = True

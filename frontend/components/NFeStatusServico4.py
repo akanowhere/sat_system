@@ -7,12 +7,14 @@ import os
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-def call_cadastro(chave, certificado):
+def call_cadastro(chave, certificado, env):
 
 #https://homologacao.nfce.fazenda.sp.gov.br/ws/NFeStatusServico4
 
     # Defina se o ambiente é de homologação (True) ou produção (False)
-    homologacao = True  # Altere para False se for produção
+
+    homologacao = env
+    #homologacao = True  # Altere para False se for produção
 
     #certificado = "/mnt/d/pythonDSA/sat/sat_system/certificados_digitais/JP_E_SOUZA_SOLUCOES_2024.pfx"
     #certificado = "/mnt/d/pythonDSA/sat/sat_system/certificados_digitais/JP_E_SOUZA_SOLUCOES_2024.pfx"
@@ -24,6 +26,7 @@ def call_cadastro(chave, certificado):
 
     print("CERTIFICADO________________",certificado)
     print("sENHA________________",chave)
+    print("sENHA________________",env)
     certificado = os.path.abspath(os.path.join(script_dir, "..", "..", "certificados_digitais_emitentes", f"{certificado}.pfx"))
     
 

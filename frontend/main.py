@@ -46,8 +46,8 @@ st.markdown(hide_github_icon, unsafe_allow_html=True)
 
 def main():
     #name, authenticated = autenticar()  # Obtém os dados da autenticação
-    cnpj, authenticated, emitente_id, licenca, certificado, chave = autenticar()  # Obtém os dados da autenticação
-    print("SENHA__MAIN", chave)
+    cnpj, authenticated, emitente_id, licenca, certificado, chave, env = autenticar()  # Obtém os dados da autenticação
+    print("SENHA__MAIN", cnpj, authenticated, emitente_id, licenca, certificado, chave, env)
     
     #print("Response na função MAIN:", response.json() if response else "Nenhuma resposta")  # Verificando a resposta
     
@@ -55,6 +55,7 @@ def main():
     #st.write(f"Authenticated: {authenticated}, CNPJ: {cnpj}, Cadastro ID: {cadastro_id}")
 
     if authenticated and cnpj == "admin":
+        print("CHAVE_ENV",cnpj, authenticated, emitente_id, licenca, certificado, chave, env)
         #st.sidebar.write("Debug Session State:", st.session_state)
         #st.sidebar.write(f"Bem-vindo, {cadastro_id}!")
         st.sidebar.markdown(f"Bem-vindo, **{cnpj}** sua licença em uso é **{licenca}**!")
@@ -148,7 +149,7 @@ def main():
                 unsafe_allow_html=True
             )
             #status_service()
-            status_service(chave, certificado)
+            status_service(chave, certificado, env)
         elif escolha == "Emitente":
             #st.subheader("Visualizar Emitente")
             st.markdown(
@@ -223,9 +224,9 @@ def main():
             st.markdown(
                 "<div style='text-align: center; font-size: 18px; color: black; margin-top: 20px;'>"
                 "Imprima ou transforme em PDF suas NF´s no link abaixo:<br>"
-                "<a href='https://www.homologacao.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx' "
+                "<a href='https://www.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx' "
                 "target='_blank' style='color: #1a73e8; text-decoration: none;'>"
-                "https://www.homologacao.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx"
+                "https://www.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaPublica.aspx"
                 "</a>"
                 "</div>",
                 unsafe_allow_html=True
@@ -275,7 +276,7 @@ def main():
                 "</div>",
                 unsafe_allow_html=True
             )
-            status_service(chave, certificado)
+            status_service(chave, certificado, env)
            
         
         if st.sidebar.button("Logout"):
