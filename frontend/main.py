@@ -62,7 +62,16 @@ def main():
         #st.sidebar.markdown(f"Bem-vindo, **{cadastro_id}**!")
         menu = ["Home", "Pedidos", "Pagamentos", "Produtos", "Status Serviço", "Emitente"]
         escolha = st.sidebar.selectbox("Escolha a Tela", menu)
+        
+        if "ultima_tela" not in st.session_state:
+            st.session_state.ultima_tela = escolha
 
+        if st.session_state.ultima_tela != escolha:
+            if st.session_state.ultima_tela == "Pedidos":
+                st.session_state.carrinho = []  # ou .clear(), se já existir
+            st.session_state.ultima_tela = escolha
+        
+        
         if escolha == "Pedidos":
             if "pedidos_reset" not in st.session_state:
                 st.session_state["pedidos_reset"] = True  # Inicializa como True na primeira vez

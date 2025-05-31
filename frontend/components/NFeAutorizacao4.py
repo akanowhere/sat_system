@@ -20,7 +20,6 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 
-#def call_pedido(senha, certificado, response_emitente, quantidade, forma_pagamento_codigo):
 def call_pedido(senha, certificado, response_emitente, quantidade, valor_total, forma_pagamento_codigo, cpf, produtos_nome, produto_selecionado, carrinho):
 #def call_pedido():
 
@@ -119,8 +118,11 @@ def call_pedido(senha, certificado, response_emitente, quantidade, valor_total, 
   # )
 
   # cliente
-  cliente = Cliente(
-      razao_social='',
+
+  if response_emitente.json().get("env") == True:
+    #homologacao = True #Altere para True se for homologação
+    cliente = Cliente(
+      razao_social='NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
       tipo_documento='CPF',           #CPF ou CNPJ
       email='',
       #numero_documento='00403914000',
@@ -136,6 +138,25 @@ def call_pedido(senha, certificado, response_emitente, quantidade, valor_total, 
       endereco_pais=CODIGO_BRASIL,
       endereco_telefone='',
   )
+  elif response_emitente.json().get("env") == False:
+    #homologacao = False #Altere para False se for produção
+    cliente = Cliente(
+        razao_social='',
+        tipo_documento='CPF',           #CPF ou CNPJ
+        email='',
+        #numero_documento='00403914000',
+        numero_documento=cpf, # numero do cpf ou cnpj
+        indicador_ie=9,                 # 9=Não contribuinte 1	Contribuinte de ICMS (possui Inscrição Estadual) 2	Contribuinte isento de Inscrição Estadual
+        endereco_logradouro='',
+        endereco_numero='',
+        endereco_complemento='',
+        endereco_bairro='',
+        endereco_municipio='',
+        endereco_uf='SP',
+        endereco_cep='',
+        endereco_pais=CODIGO_BRASIL,
+        endereco_telefone='',
+    )
 
   # Nota Fiscal
   nota_fiscal = NotaFiscal(
