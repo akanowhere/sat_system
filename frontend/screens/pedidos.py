@@ -134,10 +134,36 @@ def adicionar_pedido(cadastro_id, chave, certificado):
                 st.warning("Descrição e quantidade válidos são obrigatórios!")
             else:
                 item =produto_selecionado.copy()
-                item["quantidade"] = int(quantidade)
+                if item["unidade_comercial"] == "KG":
+                    if "quantidade" in item:
+                        print(type(item["quantidade"]))
+                    else:
+                        print("Chave 'quantidade' ainda não foi definida.")
+                    print("unidade_comercial_______________________________KG")
+                    print(quantidade)
+                    #type(item["quantidade"])
+                    item["quantidade"] = float(quantidade) 
+                    print(quantidade)
+                    print("TIPAGEMM___________________", type(quantidade))
+                elif item["unidade_comercial"] == "UN":
+                    if "quantidade" in item:
+                        print(type(item["quantidade"]))
+                    else:
+                        print("Chave 'quantidade' ainda não foi definida.")
+                    print("unidade_comercial_______________________________UN")
+                    print(quantidade)
+                    print("TIPAGEMM___________________", type(quantidade))
+                    if isinstance(quantidade, float) and not quantidade.is_integer():
+                        st.error("Este produto é vendido por unidade e não pode ter quantidade fracionada.")
+                        time.sleep(2)
+                        st.rerun() 
+                        return  # Interrompe a execução da função atual
+                    item["quantidade"] = int(quantidade)
+                    print(item["quantidade"])
                 st.session_state.carrinho.append(item)
                 print("PRODUTOS NO CARRINHO__________________",st.session_state.carrinho)
                 #st.success("Produto adicionado ao carrinho!")
+
 
         # Exibir o carrinho atual
         if st.session_state.carrinho:
